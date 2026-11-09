@@ -1,0 +1,167 @@
+
+{% extends "base.html" %}
+
+{% block title %}Departments | MediCare Hospital{% endblock %}
+
+{% block content %}
+
+<style>
+    .department-page {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 10px 0 30px;
+    }
+
+    .department-header {
+        text-align: center;
+        padding: 40px 20px;
+        margin-bottom: 35px;
+        background: linear-gradient(135deg, #173f35, #286b54, #bd9454);
+        border-radius: 18px;
+        color: white;
+        box-shadow: 0 8px 25px rgba(40, 107, 84, 0.18);
+    }
+
+    .department-header h1 {
+        font-size: 34px;
+        margin-bottom: 15px;
+        font-weight: 700;
+    }
+
+    .department-header p {
+        max-width: 650px;
+        margin: 0 auto;
+        font-size: 16px;
+        line-height: 1.8;
+        color: #f5f2e8;
+    }
+
+    .department-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+        gap: 25px;
+    }
+
+    .department-card {
+        background: #ffffff;
+        padding: 30px 25px;
+        border-radius: 15px;
+        border: 1px solid #e5e0d4;
+        border-bottom: 4px solid #bd9454;
+        box-shadow: 0 5px 18px rgba(23, 63, 53, 0.07);
+        transition: transform 0.3s ease,
+                    box-shadow 0.3s ease;
+    }
+
+    .department-card:hover {
+        transform: translateY(-7px);
+        box-shadow: 0 12px 28px rgba(40, 107, 84, 0.15);
+    }
+
+    .department-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #efe5d1;
+        color: #286b54;
+        border-radius: 13px;
+        font-size: 27px;
+        margin-bottom: 20px;
+    }
+
+    .department-card h2 {
+        font-size: 22px;
+        color: #173f35;
+        margin-bottom: 14px;
+        line-height: 1.4;
+    }
+
+    .department-card p {
+        font-size: 15px;
+        line-height: 1.8;
+        color: #64748b;
+        overflow-wrap: anywhere;
+    }
+
+    .department-footer {
+        text-align: center;
+        margin-top: 35px;
+        padding: 22px;
+        background: #edf1e8;
+        border-radius: 12px;
+        color: #173f35;
+        font-size: 15px;
+        line-height: 1.8;
+    }
+
+    .no-departments {
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 35px;
+        background: #ffffff;
+        border-radius: 12px;
+        color: #64748b;
+    }
+
+    @media (max-width: 768px) {
+        .department-header {
+            padding: 30px 18px;
+        }
+
+        .department-header h1 {
+            font-size: 27px;
+        }
+
+        .department-grid {
+            grid-template-columns: 1fr;
+            gap: 18px;
+        }
+
+        .department-card {
+            padding: 25px 20px;
+        }
+    }
+</style>
+
+<div class="department-page">
+
+    <div class="department-header">
+        <h1>Explore Our Departments</h1>
+        <p>
+            Explore our hospital departments, dedicated to providing
+            quality healthcare and professional medical services.
+        </p>
+    </div>
+
+    <div class="department-grid">
+
+        {% for d in dept %}
+        <div class="department-card">
+
+            <div class="department-icon">✚</div>
+
+            <h2>{{ d.department_name }}</h2>
+
+            <p>{{ d.department_disc }}</p>
+
+        </div>
+        {% empty %}
+        <div class="no-departments">
+            <h2>No Departments Available</h2>
+            <p>Please check back later for department information.</p>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div class="department-footer">
+        <p>
+            Our care teams work together to provide coordinated, patient-focused care.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

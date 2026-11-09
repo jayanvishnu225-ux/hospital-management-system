@@ -1,0 +1,176 @@
+
+{% extends "base.html" %}
+
+{% block title %}About Us | MediCare Hospital{% endblock %}
+
+{% block content %}
+
+<style>
+    .about-container {
+        max-width: 1100px;
+        margin: 20px auto;
+    }
+
+    .about-hero {
+        background: linear-gradient(135deg, #173f35, #286b54, #bd9454);
+        padding: 65px 25px;
+        text-align: center;
+        border-radius: 20px;
+        color: white;
+        box-shadow: 0 10px 30px rgba(40, 107, 84, 0.18);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .about-hero h1 {
+        font-size: 38px;
+        margin-bottom: 20px;
+        font-weight: 700;
+        line-height: 1.4;
+    }
+
+    .about-hero h1::after {
+        content: "";
+        display: block;
+        width: 75px;
+        height: 4px;
+        margin: 18px auto 0;
+        background: #efe5d1;
+        border-radius: 5px;
+    }
+
+    .about-hero p {
+        max-width: 700px;
+        margin: 0 auto;
+        font-size: 17px;
+        line-height: 1.9;
+        color: #eafaff;
+    }
+
+    .about-content {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px;
+        margin-top: 35px;
+    }
+
+    .about-card {
+        background: #ffffff;
+        padding: 32px;
+        border-radius: 16px;
+        border: 1px solid #e5e0d4;
+        box-shadow: 0 6px 22px rgba(23, 63, 53, 0.07);
+        transition: transform 0.3s ease,
+                    box-shadow 0.3s ease;
+    }
+
+    .about-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 12px 28px rgba(40, 107, 84, 0.13);
+    }
+
+    .about-icon {
+        width: 55px;
+        height: 55px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #efe5d1;
+        color: #286b54;
+        font-size: 27px;
+        border-radius: 13px;
+        margin-bottom: 20px;
+    }
+
+    .about-card h2 {
+        font-size: 23px;
+        color: #173f35;
+        margin-bottom: 14px;
+    }
+
+    .about-card p {
+        font-size: 15px;
+        line-height: 1.9;
+        color: #64748b;
+    }
+
+    .about-message {
+        margin-top: 30px;
+        padding: 28px;
+        text-align: center;
+        border-radius: 15px;
+        background: #edf1e8;
+        border-left: 5px solid #bd9454;
+    }
+
+    .about-message p {
+        font-size: 17px;
+        color: #173f35;
+        line-height: 1.8;
+        font-weight: 600;
+    }
+
+    @media (max-width: 768px) {
+        .about-hero {
+            padding: 40px 20px;
+        }
+
+        .about-hero h1 {
+            font-size: 28px;
+        }
+
+        .about-hero p {
+            font-size: 15px;
+        }
+
+        .about-content {
+            grid-template-columns: 1fr;
+        }
+
+        .about-card {
+            padding: 25px;
+        }
+    }
+</style>
+
+<div class="about-container">
+
+    <section class="about-hero">
+        <h1>Compassionate Care, Close to Home</h1>
+
+        <p>
+            At MediCare Hospital, we bring skilled professionals and thoughtful care together to support the health of our community.
+        </p>
+    </section>
+
+    <div class="about-content">
+
+        <div class="about-card">
+            <div class="about-icon">✚</div>
+            <h2>Our Commitment</h2>
+            <p>
+                Dedicated to supporting patient well-being through
+                compassionate care and professional medical services.
+            </p>
+        </div>
+
+        <div class="about-card">
+            <div class="about-icon">♡</div>
+            <h2>Patient Care</h2>
+            <p>
+                We believe in treating every patient with respect,
+                kindness, and attention to their healthcare needs.
+            </p>
+        </div>
+
+    </div>
+
+    <div class="about-message">
+        <p>
+            MediCare Hospital — Caring for You, Every Day.
+        </p>
+    </div>
+
+</div>
+
+{% endblock %}

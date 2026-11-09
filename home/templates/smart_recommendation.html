@@ -1,0 +1,385 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Smart Doctor Recommendation | MediCare{% endblock %}
+
+{% block content %}
+
+<style>
+    .recommendation-page,
+    .recommendation-page * {
+        box-sizing: border-box;
+    }
+
+    .recommendation-page {
+        max-width: 1100px;
+        margin: 0 auto;
+        font-family: Arial, sans-serif;
+        color: #263b32;
+    }
+
+    /* Page Heading */
+    .recommendation-header {
+        text-align: center;
+        margin-bottom: 35px;
+    }
+
+    .recommendation-icon {
+        width: 75px;
+        height: 75px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        background: #efe5d1;
+        color: #286b54;
+        border-radius: 50%;
+        font-size: 35px;
+    }
+
+    .recommendation-header h1 {
+        font-size: 32px;
+        color: #173f35;
+        margin-bottom: 12px;
+    }
+
+    .recommendation-header p {
+        color: #607d8b;
+        font-size: 16px;
+        line-height: 1.7;
+    }
+
+    /* Symptom Form Card */
+    .symptom-card {
+        max-width: 750px;
+        margin: 0 auto 40px;
+        background: #ffffff;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 5px 25px rgba(23, 63, 53, 0.09);
+        border: 1px solid #e5e0d4;
+    }
+
+    .symptom-card h2 {
+        font-size: 23px;
+        margin-bottom: 12px;
+        color: #173f35;
+    }
+
+    .symptom-card .description {
+        color: #607d8b;
+        margin-bottom: 25px;
+        line-height: 1.6;
+    }
+
+    .symptom-card label {
+        display: block;
+        font-size: 15px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        color: #263b32;
+    }
+
+    .symptom-card textarea {
+        width: 100%;
+        min-height: 150px;
+        resize: vertical;
+        padding: 16px;
+        border: 1px solid #d8d5ca;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        line-height: 1.6;
+        outline: none;
+        background: #fffefa;
+        color: #333;
+        transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    .symptom-card textarea:focus {
+        border-color: #bd9454;
+        box-shadow: 0 0 0 3px rgba(189, 148, 84, 0.15);
+    }
+
+    .symptom-card textarea::placeholder {
+        color: #94a8b4;
+    }
+
+    .recommend-button {
+        display: block;
+        width: 100%;
+        margin-top: 22px;
+        padding: 15px;
+        border: none;
+        border-radius: 9px;
+        background: linear-gradient(90deg, #286b54, #bd9454);
+        color: white;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .recommend-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(40, 107, 84, 0.25);
+    }
+
+    /* Information Note */
+    .recommendation-note {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        margin-top: 22px;
+        padding: 15px;
+        border-radius: 10px;
+        background: #f5f2e8;
+        border-left: 4px solid #bd9454;
+        color: #65766b;
+        font-size: 13px;
+        line-height: 1.7;
+    }
+
+    .recommendation-note strong {
+        color: #173f35;
+    }
+
+    /* Results Section */
+    .results-section {
+        margin-top: 45px;
+    }
+
+    .results-heading {
+        text-align: center;
+        margin-bottom: 25px;
+    }
+
+    .results-heading h2 {
+        color: #173f35;
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .results-heading p {
+        color: #607d8b;
+        line-height: 1.6;
+    }
+
+    .doctor-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 25px;
+    }
+
+    .doctor-card {
+        background: #ffffff;
+        border: 1px solid #e5e0d4;
+        border-radius: 15px;
+        padding: 25px;
+        text-align: center;
+        box-shadow: 0 4px 18px rgba(23, 63, 53, 0.07);
+        transition: transform 0.3s, box-shadow 0.3s;
+        overflow-wrap: anywhere;
+    }
+
+    .doctor-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(23, 63, 53, 0.13);
+    }
+
+    .doctor-image {
+        width: 115px;
+        height: 115px;
+        object-fit: cover;
+        border-radius: 50%;
+        border: 4px solid #efe5d1;
+        margin-bottom: 18px;
+    }
+
+    .doctor-placeholder {
+        width: 115px;
+        height: 115px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 18px;
+        border-radius: 50%;
+        background: #efe5d1;
+        color: #286b54;
+        font-size: 45px;
+    }
+
+    .doctor-card h3 {
+        color: #173f35;
+        font-size: 20px;
+        margin-bottom: 15px;
+    }
+
+    .doctor-detail {
+        margin-top: 10px;
+        padding: 10px;
+        border-radius: 8px;
+        background: #f5f2e8;
+        color: #65766b;
+        font-size: 14px;
+        line-height: 1.5;
+    }
+
+    .doctor-detail strong {
+        color: #286b54;
+    }
+
+    /* No Results */
+    .no-results {
+        padding: 30px;
+        text-align: center;
+        background: #ffffff;
+        border: 1px solid #e5e0d4;
+        border-radius: 12px;
+        color: #607d8b;
+        line-height: 1.8;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .recommendation-page {
+            padding: 10px 0;
+        }
+
+        .recommendation-header h1 {
+            font-size: 26px;
+        }
+
+        .symptom-card {
+            padding: 22px;
+        }
+
+        .results-heading h2 {
+            font-size: 24px;
+        }
+
+        .doctor-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+
+<div class="recommendation-page">
+
+    <!-- Page Heading -->
+    <div class="recommendation-header">
+        <div class="recommendation-icon">✚</div>
+        <h1>Smart Doctor Recommendation</h1>
+        <p>
+            Find doctors with relevant specializations based on
+            the symptoms you describe.
+        </p>
+    </div>
+
+    <!-- Symptom Input Form -->
+    <div class="symptom-card">
+
+        <h2>Describe Your Symptoms</h2>
+
+        <p class="description">
+            Tell us what you are experiencing to find doctors
+            whose specializations may be relevant.
+        </p>
+
+        <form method="POST">
+            {% csrf_token %}
+
+            <label for="symptoms">
+                How are you feeling?
+            </label>
+
+            <textarea
+                id="symptoms"
+                name="symptoms"
+                placeholder="Example: I have a skin rash and itching..."
+                required>{{ symptoms }}</textarea>
+
+            <button type="submit" class="recommend-button">
+                Find Recommended Doctors &nbsp; →
+            </button>
+        </form>
+
+        <div class="recommendation-note">
+            <span>ℹ️</span>
+            <div>
+                <strong>Important health information</strong><br>
+                This tool suggests relevant medical specialties
+                only. It does not diagnose medical conditions.
+                Seek urgent medical care for emergency symptoms.
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recommended Doctors -->
+    {% if searched %}
+
+        <div class="results-section">
+
+            <div class="results-heading">
+                <h2>Recommended Doctors</h2>
+                <p>Explore doctors matching your search.</p>
+            </div>
+
+            {% if doctors %}
+
+                <div class="doctor-grid">
+
+                    {% for doctor in doctors %}
+
+                        <div class="doctor-card">
+
+                            {% if doctor.doc_image %}
+                                <img
+                                    src="{{ doctor.doc_image.url }}"
+                                    alt="{{ doctor.doc_name }}"
+                                    class="doctor-image">
+                            {% else %}
+                                <div class="doctor-placeholder">
+                                    ✚
+                                </div>
+                            {% endif %}
+
+                            <h3>{{ doctor.doc_name }}</h3>
+
+                            <div class="doctor-detail">
+                                <strong>Specialization</strong><br>
+                                {{ doctor.doc_spec }}
+                            </div>
+
+                            <div class="doctor-detail">
+                                <strong>Department</strong><br>
+                                {{ doctor.doc_dept.department_name }}
+                            </div>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="no-results">
+                    <h3>No Matching Doctors Found</h3>
+                    <p>
+                        We couldn't find doctors matching your description.
+                        Try describing your symptoms differently or contact
+                        the hospital for assistance.
+                    </p>
+                </div>
+
+            {% endif %}
+
+        </div>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#286b54">
+    <title>{% block title %}MediCare Hospital{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'home/css/site.css' %}">
+</head>
+<body>
+    <header class="site-header">
+        <nav class="site-nav" aria-label="Main navigation">
+            <a class="brand" href="{% url 'index' %}" aria-label="MediCare Hospital home">
+                <span class="brand-mark" aria-hidden="true">+</span>
+                <span class="brand-name">MediCare<span>Hospital</span></span>
+            </a>
+
+            <ul class="nav-links">
+                <li><a href="{% url 'index' %}">Home</a></li>
+                <li><a href="{% url 'about' %}">About</a></li>
+                <li><a href="{% url 'departments' %}">Departments</a></li>
+                <li><a href="{% url 'doctors' %}">Our Doctors</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+                <li><a href="{% url 'smart_recommendation' %}">Find a Specialist</a></li>
+                {% if user.is_authenticated %}
+                    <li><a class="nav-cta" href="{% url 'booking' %}">Book an Appointment</a></li>
+                    <li><a href="{% url 'patient_dashboard' %}">My Dashboard</a></li>
+                    <li>
+                        <form action="{% url 'logout' %}" method="post" class="nav-auth-form">
+                            {% csrf_token %}
+                            <button type="submit" class="nav-logout">Log out</button>
+                        </form>
+                    </li>
+                {% else %}
+                    <li><a href="{% url 'login' %}">Log in</a></li>
+                    <li><a class="nav-cta" href="{% url 'booking' %}">Book an Appointment</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+    </header>
+
+    <main class="content">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-section footer-intro">
+                <a class="footer-brand" href="{% url 'index' %}">MediCare Hospital</a>
+                <p>Thoughtful, trusted care for you and your family. Our team is here to help you take the next step toward better health.</p>
+            </div>
+            <div class="footer-section">
+                <h2>Explore</h2>
+                <ul>
+                    <li><a href="{% url 'about' %}">About us</a></li>
+                    <li><a href="{% url 'departments' %}">Departments</a></li>
+                    <li><a href="{% url 'doctors' %}">Our doctors</a></li>
+                    <li><a href="{% url 'booking' %}">Appointments</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h2>Contact</h2>
+                <p>Kochi, Kerala</p>
+                <p><a href="tel:+919876543210">+91 98765 43210</a></p>
+                <p><a href="mailto:info@medicare.com">info@medicare.com</a></p>
+            </div>
+        </div>
+        <div class="copyright">
+            <p>© 2026 MediCare Hospital. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

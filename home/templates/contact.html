@@ -1,0 +1,146 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Contact | MediCare Hospital{% endblock %}
+
+{% block content %}
+
+<style>
+    .booking-container {
+        max-width: 750px;
+        margin: 20px auto;
+        padding: 40px;
+        background: #ffffff;
+        border-radius: 18px;
+        border-top: 5px solid #bd9454;
+        box-shadow: 0 10px 35px rgba(40, 107, 84, 0.12);
+    }
+
+    .booking-container h2 {
+        text-align: center;
+        color: #173f35;
+        font-size: 32px;
+        margin-bottom: 30px;
+        font-weight: 700;
+    }
+
+    .booking-container h2::after {
+        content: "";
+        display: block;
+        width: 65px;
+        height: 4px;
+        margin: 12px auto 0;
+        background: #bd9454;
+        border-radius: 5px;
+    }
+
+    .booking-form p {
+        margin-bottom: 20px;
+        color: #334155;
+        font-size: 15px;
+        font-weight: 600;
+    }
+
+    .booking-form label {
+        display: block;
+        margin-bottom: 8px;
+        color: #173f35;
+        font-weight: 600;
+    }
+
+    .booking-form input,
+    .booking-form select,
+    .booking-form textarea {
+        width: 100%;
+        padding: 13px 15px;
+        border: 1px solid #d8d5ca;
+        border-radius: 9px;
+        background: #fffefa;
+        color: #333;
+        font-family: Arial, sans-serif;
+        font-size: 15px;
+        outline: none;
+        transition: 0.3s ease;
+    }
+
+    .booking-form input:focus,
+    .booking-form select:focus,
+    .booking-form textarea:focus {
+        border-color: #bd9454;
+        background: #ffffff;
+        box-shadow: 0 0 0 3px rgba(189, 148, 84, 0.12);
+    }
+
+    .booking-form textarea {
+        min-height: 130px;
+        resize: vertical;
+    }
+
+    .booking-form .btn.primary {
+        display: block;
+        width: 100%;
+        padding: 15px;
+        margin-top: 12px;
+        border: none;
+        border-radius: 10px;
+        background: linear-gradient(90deg, #286b54, #bd9454);
+        color: #ffffff;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: 0.3s ease;
+    }
+
+    .booking-form .btn.primary:hover {
+        background: linear-gradient(90deg, #173f35, #286b54);
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(40, 107, 84, 0.25);
+    }
+
+    .booking-form ul.errorlist {
+        color: #dc2626;
+        margin: 5px 0 10px 18px;
+        font-size: 13px;
+    }
+
+    .booking-container p[style] {
+        background: #fff1f2;
+        border: 1px solid #fecdd3;
+        border-radius: 8px;
+        padding: 14px;
+        color: #be123c !important;
+    }
+
+    @media (max-width: 768px) {
+        .booking-container {
+            margin: 10px auto;
+            padding: 25px 20px;
+        }
+
+        .booking-container h2 {
+            font-size: 27px;
+        }
+    }
+</style>
+
+<div class="booking-container">
+    <h2>Contact</h2>
+
+    <form method="POST" class="booking-form">
+        {% csrf_token %}
+
+        {% if form %}
+            {{ form.as_p }}
+
+            <button type="submit" class="btn primary">
+                submit
+            </button>
+        {% else %}
+            <p style="text-align: center; color: red;">
+                Form variable missing. Check your view.
+            </p>
+        {% endif %}
+    </form>
+</div>
+
+{% endblock %}

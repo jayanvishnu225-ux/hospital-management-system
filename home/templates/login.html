@@ -1,0 +1,195 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Login | MediCare Hospital{% endblock %}
+
+{% block content %}
+
+<style>
+    .login-container {
+        max-width: 440px;
+        margin: 55px auto;
+        padding: 38px 35px;
+        background: #ffffff;
+        border-radius: 18px;
+        box-shadow: 0 10px 35px rgba(40, 107, 84, 0.14);
+        border-top: 5px solid #bd9454;
+        font-family: Arial, sans-serif;
+        box-sizing: border-box;
+    }
+
+    .login-icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #efe5d1;
+        color: #286b54;
+        border-radius: 50%;
+        font-size: 32px;
+    }
+
+    .login-container h2 {
+        text-align: center;
+        color: #173f35;
+        font-size: 28px;
+        margin: 0 0 10px;
+        font-weight: 700;
+    }
+
+    .login-container .subtitle {
+        text-align: center;
+        color: #718096;
+        font-size: 14px;
+        margin-bottom: 28px;
+        line-height: 1.6;
+    }
+
+    .login-container form p {
+        margin-bottom: 20px;
+    }
+
+    .login-container label {
+        display: block;
+        color: #334155;
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+
+    .login-container input {
+        width: 100%;
+        padding: 13px 14px;
+        border: 1px solid #d8d5ca;
+        border-radius: 9px;
+        font-size: 15px;
+        color: #1e293b;
+        background: #fffefa;
+        box-sizing: border-box;
+        outline: none;
+        transition: 0.3s ease;
+    }
+
+    .login-container input:focus {
+        border-color: #bd9454;
+        box-shadow: 0 0 0 3px rgba(189, 148, 84, 0.13);
+        background: #ffffff;
+    }
+
+    .login-container .helptext {
+        display: block;
+        color: #64748b;
+        font-size: 12px;
+        margin-top: 6px;
+    }
+
+    .login-container ul.errorlist {
+        color: #dc2626;
+        font-size: 13px;
+        padding-left: 20px;
+        margin-bottom: 8px;
+    }
+
+    .form-options {
+        display: flex;
+        justify-content: flex-end;
+        margin: 5px 0 22px;
+    }
+
+    .form-options a,
+    .footer-text a {
+        color: #286b54;
+        font-weight: 600;
+        text-decoration: none;
+        transition: 0.3s;
+    }
+
+    .form-options a {
+        font-size: 13px;
+    }
+
+    .form-options a:hover,
+    .footer-text a:hover {
+        color: #bd9454;
+        text-decoration: underline;
+    }
+
+    .login-container button {
+        width: 100%;
+        padding: 14px;
+        background: linear-gradient(135deg, #286b54, #bd9454);
+        color: white;
+        border: none;
+        border-radius: 9px;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .login-container button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 7px 18px rgba(40, 107, 84, 0.25);
+    }
+
+    .footer-text {
+        text-align: center;
+        margin: 24px 0 0;
+        color: #64748b;
+        font-size: 14px;
+    }
+
+    .login-container .security-note {
+        text-align: center;
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 24px;
+        padding-top: 17px;
+        border-top: 1px solid #e2e8f0;
+    }
+
+    @media (max-width: 500px) {
+        .login-container {
+            margin: 30px 15px;
+            padding: 30px 22px;
+        }
+    }
+</style>
+
+<div class="login-container">
+
+    <div class="login-icon">✚</div>
+
+    <h2>Welcome Back</h2>
+
+    <p class="subtitle">
+        Sign in to your MediCare account
+        <br>We're here to care for you.
+    </p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <div class="form-options">
+            <a href="#">Forgot password?</a>
+        </div>
+
+        <button type="submit">Login to Your Account</button>
+    </form>
+
+    <p class="footer-text">
+        New here?
+        <a href="{% url 'signup' %}">Sign up for free</a>
+    </p>
+
+    <div class="security-note">
+        🔒 Your information is protected and secure.
+    </div>
+
+</div>
+
+{% endblock %}

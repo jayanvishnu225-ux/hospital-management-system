@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect,get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login
 from django.utils import timezone
-
+from django.contrib.auth.forms import AuthenticationForm
+from django.views.decorators.http import require_POST
 from .models import department, Doctor
 from .models import booking as Booking
 
@@ -134,7 +136,61 @@ def smart_recommendation(request):
             "searched": searched,
         },
     )         
+def doctor_login(request):
+    if request.method == "POST":
+        form = AuthenticationForm(request, data=request.POST)
 
+        if form.is_valid():
+            user = form.get_user()
+
+            if Doctor.objects.filter(user=user).exists():
+                login(request, user)
+                return redirect('doctor_dashboard')
+            else:
+                form.add_error(
+                    None,
+                    "This account is not registered as a doctor."
+                )
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'doctor_login.html', {'form': form})
+
+
+@login_required
+def doctor_dashboard(request):
+    doctor = get_object_or_404(Doctor, user=request.user)
+
+    appointments = Booking.objects.filter(
+        doctor=doctor
+    ).order_by('booking_on')
+
+    context = {
+        'doctor': doctor,
+        'appointments': appointments,
+    }
+
+    return render(request, 'doctor_dashboard.html', context)
+
+
+@login_required
+@require_POST
+def update_appointment_status(request, appointment_id):
+    doctor = get_object_or_404(Doctor, user=request.user)
+
+    appointment = get_object_or_404(
+        Booking,
+        id=appointment_id,
+        doctor=doctor
+    )
+
+    new_status = request.POST.get('status')
+
+    if new_status in ['Approved', 'Rejected']:
+        appointment.status = new_status
+        appointment.save()
+
+    return redirect('doctor_dashboard')
     
 
     

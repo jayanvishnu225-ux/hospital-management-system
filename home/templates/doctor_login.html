@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Login | MediCare{% endblock %}
+
+{% block content %}
+
+<div class="container" style="max-width:450px; margin:60px auto; padding:30px; background:white; border-radius:15px; box-shadow:0 5px 20px rgba(0,0,0,0.1);">
+
+    <h2 style="color:#0077b6; text-align:center;">Doctor Login</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.non_field_errors }}
+
+        <p>Username</p>
+        {{ form.username }}
+
+        <p>Password</p>
+        {{ form.password }}
+
+        <button type="submit"
+            style="width:100%; padding:12px; margin-top:20px; background:#0077b6; color:white; border:none; border-radius:8px; cursor:pointer;">
+            Login
+        </button>
+    </form>
+
+</div>
+
+{% endblock %}

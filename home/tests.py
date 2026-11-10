@@ -24,6 +24,15 @@ class DoctorsViewTests(TestCase):
         self.assertContains(response, 'Dr. Example')
 
 
+class LoginViewTests(TestCase):
+    def test_login_page_renders(self):
+        response = self.client.get(reverse('login'))
+
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, 'Welcome back!')
+        self.assertContains(response, 'Sign In')
+
+
 class DoctorRecommendationTests(TestCase):
     def test_recommends_doctors_for_matching_symptoms(self):
         dept = department.objects.create(

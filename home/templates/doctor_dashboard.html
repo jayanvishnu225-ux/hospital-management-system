@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+
+{% block title %}Doctor Dashboard | MediCare{% endblock %}
+
+{% block content %}
+
+<div style="max-width:1100px; margin:40px auto; padding:20px;">
+
+    <h2 style="color:#0077b6;">
+        Welcome, Dr. {{ doctor.doc_name }}
+    </h2>
+
+    <p>Manage your patient appointment requests.</p>
+
+    <h3 style="margin-top:30px;">Appointment Requests</h3>
+
+    <div style="overflow-x:auto;">
+
+        <table style="width:100%; border-collapse:collapse; margin-top:20px;">
+
+            <tr style="background:#caf0f8;">
+                <th style="padding:12px;">Patient</th>
+                <th style="padding:12px;">Email</th>
+                <th style="padding:12px;">Phone</th>
+                <th style="padding:12px;">Date</th>
+                <th style="padding:12px;">Status</th>
+                <th style="padding:12px;">Action</th>
+            </tr>
+
+            {% for appointment in appointments %}
+
+            <tr style="text-align:center; border-bottom:1px solid #ddd;">
+
+                <td style="padding:12px;">{{ appointment.patient_name }}</td>
+                <td style="padding:12px;">{{ appointment.patient_email }}</td>
+                <td style="padding:12px;">{{ appointment.patient_phone }}</td>
+                <td style="padding:12px;">{{ appointment.booking_on }}</td>
+                <td style="padding:12px;">{{ appointment.status }}</td>
+
+                <td style="padding:12px;">
+
+                    {% if appointment.status == 'Pending' %}
+
+                    <form method="POST"
+                        action="{% url 'update_appointment_status' appointment.id %}">
+                        {% csrf_token %}
+
+                        <button name="status" value="Approved"
+                            style="background:#16a34a; color:white; padding:8px; border:none; border-radius:5px;">
+                            Approve
+                        </button>
+
+                        <button name="status" value="Rejected"
+                            style="background:#dc2626; color:white; padding:8px; border:none; border-radius:5px;">
+                            Reject
+                        </button>
+
+                    </form>
+
+                    {% else %}
+                        {{ appointment.status }}
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% empty %}
+
+            <tr>
+                <td colspan="6" style="padding:20px; text-align:center;">
+                    No appointment requests available.
+                </td>
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

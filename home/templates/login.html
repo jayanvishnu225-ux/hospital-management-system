@@ -1,195 +1,343 @@
 
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}Login | MediCare Hospital{% endblock %}
 
 {% block content %}
 
 <style>
-    .login-container {
-        max-width: 440px;
-        margin: 55px auto;
-        padding: 38px 35px;
-        background: #ffffff;
-        border-radius: 18px;
-        box-shadow: 0 10px 35px rgba(40, 107, 84, 0.14);
-        border-top: 5px solid #bd9454;
-        font-family: Arial, sans-serif;
+    .login-page,
+    .login-page * {
         box-sizing: border-box;
     }
 
-    .login-icon {
-        width: 70px;
-        height: 70px;
-        margin: 0 auto 18px;
+    .login-page {
+        min-height: 85vh;
+        padding: 35px 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: #f1f5f9;
+        font-family: 'Segoe UI', Arial, sans-serif;
+    }
+
+    /* Main Split Card */
+    .login-wrapper {
+        width: 100%;
+        max-width: 1050px;
+        min-height: 590px;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        background: #ffffff;
+        border-radius: 12px;
+        overflow: hidden;
+        box-shadow: 0 15px 45px rgba(15, 45, 70, 0.15);
+    }
+
+    /* LEFT IMAGE SECTION */
+    .login-image {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding: 45px;
+
+        background:
+            linear-gradient(
+                to top,
+                rgba(0, 75, 120, 0.65),
+                rgba(0, 119, 182, 0.10)
+            ),
+            url("{% static 'home/images/doctor.png.png' %}");
+        background-size: cover;
+        background-position: center, 30% center;
+        background-repeat: no-repeat;
+        color: white;
+    }
+
+    .image-content {
+        position: relative;
+        z-index: 1;
+    }
+
+    .brand-logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 18px;
+    }
+
+    .brand-icon {
+        width: 38px;
+        height: 38px;
+        border: 2px solid white;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .brand-name {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: 1px;
+    }
+
+    .brand-description {
+        font-size: 14px;
+        line-height: 1.8;
+        max-width: 330px;
+        color: #e6f5ff;
+    }
+
+    /* RIGHT LOGIN SECTION */
+    .login-form-section {
+        padding: 65px 65px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        background: #ffffff;
+    }
+
+    .form-heading {
+        margin-bottom: 35px;
+    }
+
+    .form-icon {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: #e6f6fc;
+        color: #0077b6;
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #efe5d1;
-        color: #286b54;
-        border-radius: 50%;
-        font-size: 32px;
+        font-size: 23px;
+        margin-bottom: 22px;
     }
 
-    .login-container h2 {
-        text-align: center;
-        color: #173f35;
-        font-size: 28px;
-        margin: 0 0 10px;
+    .form-heading h2 {
+        font-size: 30px;
+        color: #172b3a;
+        margin: 0 0 9px;
         font-weight: 700;
     }
 
-    .login-container .subtitle {
-        text-align: center;
-        color: #718096;
+    .form-heading p {
+        color: #8996a3;
         font-size: 14px;
-        margin-bottom: 28px;
-        line-height: 1.6;
+        margin: 0;
     }
 
-    .login-container form p {
-        margin-bottom: 20px;
+    /* Django Form */
+    .login-form-section form p {
+        margin: 0 0 22px;
     }
 
-    .login-container label {
+    .login-form-section label {
         display: block;
-        color: #334155;
+        font-size: 13px;
         font-weight: 600;
-        font-size: 14px;
-        margin-bottom: 8px;
+        color: #334e68;
+        margin-bottom: 9px;
     }
 
-    .login-container input {
+    .login-form-section input {
         width: 100%;
         padding: 13px 14px;
-        border: 1px solid #d8d5ca;
-        border-radius: 9px;
-        font-size: 15px;
-        color: #1e293b;
-        background: #fffefa;
-        box-sizing: border-box;
-        outline: none;
-        transition: 0.3s ease;
-    }
-
-    .login-container input:focus {
-        border-color: #bd9454;
-        box-shadow: 0 0 0 3px rgba(189, 148, 84, 0.13);
+        border: 1px solid #dce4eb;
+        border-radius: 6px;
         background: #ffffff;
-    }
-
-    .login-container .helptext {
-        display: block;
-        color: #64748b;
-        font-size: 12px;
-        margin-top: 6px;
-    }
-
-    .login-container ul.errorlist {
-        color: #dc2626;
-        font-size: 13px;
-        padding-left: 20px;
-        margin-bottom: 8px;
-    }
-
-    .form-options {
-        display: flex;
-        justify-content: flex-end;
-        margin: 5px 0 22px;
-    }
-
-    .form-options a,
-    .footer-text a {
-        color: #286b54;
-        font-weight: 600;
-        text-decoration: none;
+        color: #243b53;
+        font-size: 14px;
+        outline: none;
         transition: 0.3s;
     }
 
-    .form-options a {
-        font-size: 13px;
+    .login-form-section input:focus {
+        border-color: #0077b6;
+        box-shadow: 0 0 0 3px rgba(0, 119, 182, 0.09);
     }
 
-    .form-options a:hover,
-    .footer-text a:hover {
-        color: #bd9454;
+    .login-form-section .helptext {
+        display: block;
+        font-size: 11px;
+        color: #8795a1;
+        margin-top: 6px;
+    }
+
+    .login-form-section .errorlist {
+        color: #dc3545;
+        font-size: 12px;
+        padding-left: 18px;
+        margin: 5px 0;
+    }
+
+    /* Forgot Password */
+    .forgot-password {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: -8px;
+        margin-bottom: 25px;
+    }
+
+    .forgot-password a {
+        color: #0077b6;
+        text-decoration: none;
+        font-size: 12px;
+        font-weight: 600;
+    }
+
+    .forgot-password a:hover {
         text-decoration: underline;
     }
 
-    .login-container button {
+    /* Login Button */
+    .login-button {
         width: 100%;
         padding: 14px;
-        background: linear-gradient(135deg, #286b54, #bd9454);
-        color: white;
         border: none;
-        border-radius: 9px;
-        font-size: 16px;
-        font-weight: 700;
+        border-radius: 7px;
+        background: #0077b6;
+        color: white;
+        font-size: 15px;
+        font-weight: 600;
         cursor: pointer;
-        transition: transform 0.2s, box-shadow 0.2s;
+        transition: 0.3s;
     }
 
-    .login-container button:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 7px 18px rgba(40, 107, 84, 0.25);
+    .login-button:hover {
+        background: #005f91;
+        box-shadow: 0 5px 15px rgba(0, 119, 182, 0.2);
+        transform: translateY(-1px);
     }
 
-    .footer-text {
+    /* Signup */
+    .signup-text {
         text-align: center;
-        margin: 24px 0 0;
-        color: #64748b;
-        font-size: 14px;
+        font-size: 13px;
+        color: #7b8794;
+        margin-top: 28px;
     }
 
-    .login-container .security-note {
+    .signup-text a {
+        color: #0077b6;
+        font-weight: 600;
+        text-decoration: none;
+    }
+
+    .signup-text a:hover {
+        text-decoration: underline;
+    }
+
+    .security-note {
         text-align: center;
-        font-size: 12px;
-        color: #64748b;
-        margin-top: 24px;
-        padding-top: 17px;
-        border-top: 1px solid #e2e8f0;
+        color: #9aa5b1;
+        font-size: 11px;
+        margin-top: 35px;
     }
 
-    @media (max-width: 500px) {
-        .login-container {
-            margin: 30px 15px;
-            padding: 30px 22px;
+    /* Responsive */
+    @media (max-width: 750px) {
+        .login-wrapper {
+            grid-template-columns: 1fr;
+            max-width: 460px;
+        }
+
+        .login-image {
+            min-height: 230px;
+            padding: 30px;
+        }
+
+        .login-form-section {
+            padding: 40px 30px;
+        }
+    }
+
+    @media (max-width: 450px) {
+        .login-page {
+            padding: 20px 10px;
+        }
+
+        .login-form-section {
+            padding: 32px 22px;
+        }
+
+        .login-image {
+            min-height: 200px;
         }
     }
 </style>
 
-<div class="login-container">
+<div class="login-page">
 
-    <div class="login-icon">✚</div>
+    <div class="login-wrapper">
 
-    <h2>Welcome Back</h2>
+        <!-- LEFT IMAGE SECTION -->
+        <div class="login-image">
 
-    <p class="subtitle">
-        Sign in to your MediCare account
-        <br>We're here to care for you.
-    </p>
+            <div class="image-content">
 
-    <form method="POST">
-        {% csrf_token %}
+                <div class="brand-logo">
+                    <div class="brand-icon">✚</div>
+                    <span class="brand-name">MEDICARE</span>
+                </div>
 
-        {{ form.as_p }}
+                <p class="brand-description">
+                    Empowering Healthcare, One Click at a Time.
+                    Your Health, Your Records, Our Commitment.
+                </p>
 
-        <div class="form-options">
-            <a href="#">Forgot password?</a>
+            </div>
+
         </div>
 
-        <button type="submit">Login to Your Account</button>
-    </form>
+        <!-- RIGHT LOGIN SECTION -->
+        <div class="login-form-section">
 
-    <p class="footer-text">
-        New here?
-        <a href="{% url 'signup' %}">Sign up for free</a>
-    </p>
+            <div class="form-heading">
 
-    <div class="security-note">
-        🔒 Your information is protected and secure.
+                <div class="form-icon">✚</div>
+
+                <h2>Login</h2>
+
+                <p>Welcome back! Please enter your details.</p>
+
+            </div>
+
+            <form method="POST">
+
+                {% csrf_token %}
+
+                {{ form.as_p }}
+
+                <div class="forgot-password">
+                    <a href="#">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="login-button">
+                    Sign In
+                </button>
+
+            </form>
+
+            <p class="signup-text">
+                Don't have an account?
+                <a href="{% url 'signup' %}">Sign up</a>
+            </p>
+
+            <div class="security-note">
+                🔒 Your personal information is kept secure.
+            </div>
+
+        </div>
+
     </div>
 
 </div>
 
 {% endblock %}
+```

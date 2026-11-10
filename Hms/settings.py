@@ -36,6 +36,12 @@ RENDER_EXTERNAL_HOSTNAME = os.environ.get(
 
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+CSRF_TRUSTED_ORIGINS = [ 'https://hospital-management-system-ni5r.onrender.com']
+
+if RENDER_EXTERNAL_HOSTNAME:
+    CSRF_TRUSTED_ORIGINS.append(
+        f"https://{RENDER_EXTERNAL_HOSTNAME}"
+    )
 
 
 # Application definition

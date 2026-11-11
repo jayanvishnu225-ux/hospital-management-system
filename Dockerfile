@@ -13,4 +13,4 @@ COPY . .
 
 EXPOSE 10000
 
-CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && python manage.py create_render_superuser && exec gunicorn Hms.wsgi:application --bind 0.0.0.0:${PORT:-10000}"]
+CMD ["sh", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && exec gunicorn Hms.wsgi:application --bind 0.0.0.0:${PORT:-10000}"]

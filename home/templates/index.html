@@ -1,638 +1,1396 @@
-
 {% extends "base.html" %}
 
-{% block title %}Home | MediCare Hospital{% endblock %}
+{% block title %}MediCare Hospital | Multi-Specialty Hospital in Kochi{% endblock %}
 
 {% block content %}
 
 <style>
-    .home-container {
-        max-width: 1250px;
-        margin: 0 auto;
+    /* ============================================================
+       TOKENS
+       ============================================================ */
+    :root {
+        --ink-950: #0f1d33;
+        --ink-900: #1b2d4f;
+        --ink-700: #3a4a68;
+        --ink-500: #5f6f88;
+        --ink-300: #a8b2c4;
+        --ink-100: #e4ddd0;
+        --ink-050: #f2ece1;
+
+        --ivory-050: #fdfbf7;
+        --ivory-100: #fbf8f3;
+        --ivory-200: #f2ece1;
+
+        --amber-700: #a87519;
+        --amber-600: #c78d1f;
+        --amber-500: #e0a52e;
+        --amber-400: #f0bd55;
+        --amber-200: #fbe2ae;
+        --amber-100: #fdf2d5;
+
+        --teal-600: #1f7d72;
+        --teal-500: #2a9d8f;
+        --teal-100: #d6f2ee;
+
+        --red-600: #b22b1f;
+        --red-500: #e63946;
+        --red-100: #fde4e2;
+
+        --radius-sm: 8px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --radius-xl: 28px;
+        --radius-pill: 999px;
+
+        --shadow-xs: 0 1px 2px rgba(15,29,51,.06);
+        --shadow-sm: 0 4px 16px rgba(15,29,51,.07);
+        --shadow-md: 0 12px 32px rgba(15,29,51,.10);
+        --shadow-lg: 0 24px 60px rgba(15,29,51,.18);
+
+        --ease: cubic-bezier(.22,1,.36,1);
+        --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+        --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    /* Hero section */
-    .hero-section {
-        position: relative;
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+    /* ============================================================
+       SKIP LINK
+       ============================================================ */
+    .skip-link {
+        position: absolute; left: -9999px; top: 8px;
+        background: var(--ink-950); color: #fff;
+        padding: 10px 18px; border-radius: var(--radius-pill);
+        z-index: 9999; font-family: var(--font-ui); font-size: 14px;
+    }
+    .skip-link:focus { left: 16px; }
+
+    /* ============================================================
+       UTILITY BAR
+       ============================================================ */
+    .utility-bar {
+        background: var(--ink-950);
+        color: #c9d2e0;
+        font-family: var(--font-ui);
+        font-size: 13px;
+    }
+    .utility-bar .wrap {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        padding: 10px 24px;
+        flex-wrap: wrap;
+    }
+    .utility-left, .utility-right {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 35px;
-        padding: 65px 50px;
-        overflow: hidden;
-        border-radius: 24px;
-        background: linear-gradient(120deg, #173f35, #286b54 55%, #bd9454);
-        color: white;
-        box-shadow: 0 15px 40px rgba(40, 107, 84, 0.2);
+        gap: 22px;
+        flex-wrap: wrap;
+    }
+    .utility-bar a {
+        color: #c9d2e0;
+        text-decoration: none;
+        transition: color .2s;
+    }
+    .utility-bar a:hover { color: var(--amber-400); }
+    .utility-bar .emergency {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #fff;
+        font-weight: 600;
+    }
+    .utility-bar .emergency .dot {
+        width: 7px; height: 7px;
+        border-radius: 50%;
+        background: var(--red-500);
+        box-shadow: 0 0 0 3px rgba(230,57,70,.25);
+        animation: pulseDot 1.8s ease-in-out infinite;
+    }
+    @keyframes pulseDot {
+        0%,100% { box-shadow: 0 0 0 3px rgba(230,57,70,.25); }
+        50%     { box-shadow: 0 0 0 6px rgba(230,57,70,.08); }
     }
 
-    .hero-section::before,
-    .hero-section::after {
+    /* ============================================================
+       EMERGENCY BANNER
+       ============================================================ */
+    .emergency-banner {
+        background: var(--red-100);
+        border-bottom: 1px solid #f5c9c5;
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        color: #7a1f18;
+    }
+    .emergency-banner .wrap {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 24px;
+        flex-wrap: wrap;
+    }
+    .emergency-banner .label {
+        background: var(--red-500);
+        color: #fff;
+        padding: 3px 10px;
+        border-radius: var(--radius-pill);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+    }
+    .emergency-banner strong { color: #7a1f18; }
+    .emergency-banner a {
+        color: var(--red-600);
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    /* ============================================================
+       HERO — WITH BACKGROUND IMAGE
+       ============================================================ */
+    .hero {
+        position: relative;
+        color: #fff;
+        overflow: hidden;
+        padding: 100px 0 90px;
+        min-height: 620px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Background photo layer */
+    .hero-bg {
+        position: absolute;
+        inset: 0;
+        z-index: 0;
+        background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Gradient overlay for readability */
+    .hero-bg::after {
         content: "";
         position: absolute;
-        border: 1px solid rgba(255,255,255,0.12);
-        border-radius: 50%;
-        pointer-events: none;
+        inset: 0;
+        background:
+            linear-gradient(100deg,
+                rgba(15,29,51,.95) 0%,
+                rgba(15,29,51,.82) 35%,
+                rgba(15,29,51,.55) 65%,
+                rgba(15,29,51,.30) 100%),
+            radial-gradient(circle at 80% 20%, rgba(224,165,46,.20), transparent 50%);
     }
 
-    .hero-section::before {
-        width: 350px;
-        height: 350px;
-        right: -100px;
-        top: -180px;
-    }
-
-    .hero-section::after {
-        width: 250px;
-        height: 250px;
-        right: 100px;
-        bottom: -190px;
-    }
-
-    .hero-content {
-        flex: 1;
+    .hero .wrap {
         position: relative;
         z-index: 1;
+        display: grid;
+        grid-template-columns: 1.15fr 0.85fr;
+        gap: 56px;
+        align-items: center;
+        width: 100%;
     }
 
-    .welcome-label {
-        display: inline-block;
-        padding: 9px 16px;
-        margin-bottom: 22px;
-        border: 1px solid rgba(255,255,255,0.3);
-        border-radius: 30px;
-        background: rgba(255,255,255,0.12);
-        color: #f6f0e2;
+    .hero-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: var(--radius-pill);
+        background: rgba(224,165,46,.16);
+        border: 1px solid rgba(224,165,46,.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--amber-400);
+        font-family: var(--font-ui);
         font-size: 12px;
-        font-weight: bold;
+        font-weight: 700;
         letter-spacing: 1.2px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+    .hero-eyebrow .dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--amber-400);
+        box-shadow: 0 0 0 4px rgba(224,165,46,.22);
     }
 
-    .hero-content h1 {
-        margin-bottom: 18px;
-        font-size: clamp(30px, 4vw, 45px);
-        line-height: 1.2;
-        letter-spacing: -1px;
+    .hero h1 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(38px, 5vw, 62px);
+        line-height: 1.05;
+        letter-spacing: -1.4px;
+        margin: 0 0 22px;
+        text-shadow: 0 2px 20px rgba(0,0,0,.25);
+    }
+    .hero h1 em {
+        font-style: italic;
+        color: var(--amber-400);
     }
 
-    .hero-content h1 span {
-        color: #f1d9a8;
+    .hero-lead {
+        font-family: var(--font-ui);
+        font-size: 17px;
+        line-height: 1.7;
+        color: #dbe3ee;
+        max-width: 520px;
+        margin: 0 0 34px;
+        text-shadow: 0 1px 12px rgba(0,0,0,.3);
     }
 
-    .hero-content p {
-        max-width: 580px;
-        color: #f5f2e8;
-        font-size: 16px;
-        line-height: 1.9;
-        margin-bottom: 28px;
-    }
-
-    .hero-buttons {
+    .hero-actions {
         display: flex;
         flex-wrap: wrap;
         gap: 12px;
+        margin-bottom: 44px;
     }
-
-    .hero-btn {
+    .btn {
         display: inline-flex;
-        justify-content: center;
         align-items: center;
         gap: 9px;
-        padding: 14px 21px;
-        border: 1px solid rgba(255,255,255,0.75);
-        border-radius: 30px;
+        padding: 15px 26px;
+        border-radius: var(--radius-pill);
+        font-family: var(--font-ui);
+        font-size: 15px;
+        font-weight: 600;
         text-decoration: none;
+        border: 1px solid transparent;
+        transition: all .3s var(--ease);
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    .btn-amber {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        box-shadow: 0 12px 28px rgba(224,165,46,.35);
+    }
+    .btn-amber:hover {
+        background: var(--amber-400);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 34px rgba(224,165,46,.48);
+    }
+    .btn-ghost {
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        border-color: rgba(255,255,255,.32);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+    .btn-ghost:hover {
+        background: rgba(255,255,255,.16);
+        border-color: rgba(255,255,255,.60);
+        transform: translateY(-2px);
+    }
+
+    /* Hero trust items — glass cards over photo */
+    .hero-trust {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 14px;
+        max-width: 560px;
+    }
+    .hero-trust-item {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 14px;
+        border-radius: var(--radius-md);
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.14);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: #d4dbe6;
+    }
+    .hero-trust-item .icon {
+        width: 32px; height: 32px;
+        flex-shrink: 0;
+        border-radius: 9px;
+        background: rgba(42,157,143,.28);
+        border: 1px solid rgba(42,157,143,.4);
+        display: grid;
+        place-items: center;
         font-size: 14px;
-        font-weight: bold;
-        transition: 0.3s ease;
+        color: #fff;
+    }
+    .hero-trust-item strong {
+        color: #fff;
+        font-weight: 700;
+        display: block;
+        font-size: 13px;
+        margin-bottom: 1px;
     }
 
-    .hero-btn.primary {
-        background: #d2ae6b;
-        color: #173f35;
-        border-color: #d2ae6b;
-    }
-
-    .hero-btn.secondary {
-        background: transparent;
-        color: white;
-    }
-
-    .hero-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 7px 20px rgba(0,0,0,0.15);
-    }
-
-    .hero-btn.secondary:hover {
-        background: white;
-        color: #286b54;
-    }
-
-    /* Medical illustration */
-    .hero-visual {
+    /* ============================================================
+       QUICK ACTION PANEL
+       ============================================================ */
+    .quick-panel {
         position: relative;
         z-index: 1;
-        flex: 0 0 260px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        min-height: 260px;
+        background: rgba(255,255,255,.96);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        border-radius: var(--radius-xl);
+        padding: 28px;
+        box-shadow: 0 30px 70px rgba(0,0,0,.35);
+        border: 1px solid rgba(255,255,255,.5);
+        color: var(--ink-950);
+        font-family: var(--font-ui);
     }
-
-    .medical-circle {
-        width: 235px;
-        height: 235px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        border: 2px solid rgba(255,255,255,0.3);
-        border-radius: 50%;
-        background: rgba(255,255,255,0.12);
-        box-shadow: 0 0 0 18px rgba(255,255,255,0.05);
-        font-size: 105px;
+    .quick-panel h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 22px;
+        letter-spacing: -0.3px;
+        margin: 0 0 6px;
     }
-
-    .floating-badge {
-        position: absolute;
-        right: -3px;
-        bottom: 25px;
-        padding: 13px 16px;
-        border-radius: 13px;
-        background: white;
-        color: #173f35;
-        box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    .quick-panel .sub {
         font-size: 13px;
-        font-weight: bold;
+        color: var(--ink-500);
+        margin: 0 0 20px;
     }
+    .quick-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+    .quick-tile {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        padding: 16px;
+        border-radius: var(--radius-md);
+        background: var(--ivory-100);
+        border: 1px solid var(--ink-100);
+        text-decoration: none;
+        color: var(--ink-950);
+        transition: all .3s var(--ease);
+    }
+    .quick-tile:hover {
+        background: #fff;
+        border-color: var(--amber-500);
+        transform: translateY(-2px);
+        box-shadow: var(--shadow-sm);
+    }
+    .quick-tile .q-icon {
+        font-size: 20px;
+        color: var(--amber-600);
+    }
+    .quick-tile .q-label {
+        font-size: 13px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+    .quick-tile .q-meta {
+        font-size: 11px;
+        color: var(--ink-500);
+        font-weight: 500;
+    }
+    .quick-tile.urgent {
+        background: var(--red-100);
+        border-color: #f5c9c5;
+    }
+    .quick-tile.urgent .q-icon { color: var(--red-600); }
+    .quick-tile.urgent:hover { border-color: var(--red-500); }
 
-    /* Section headings */
-    .section-heading {
-        margin: 55px 0 30px;
+    /* ============================================================
+       SECTION BASE
+       ============================================================ */
+    .section { padding: 80px 0; }
+    .section-tight { padding: 48px 0; }
+    .section-alt { background: var(--ivory-100); }
+
+    .section-head {
+        max-width: 680px;
+        margin: 0 auto 48px;
         text-align: center;
     }
-
-    .section-heading .eyebrow {
-        color: #8d7449;
+    .section-kicker {
+        display: inline-block;
+        font-family: var(--font-ui);
         font-size: 12px;
-        font-weight: bold;
+        font-weight: 700;
         letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--amber-700);
+        margin-bottom: 14px;
+    }
+    .section-head h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(28px, 3.4vw, 42px);
+        line-height: 1.12;
+        letter-spacing: -0.7px;
+        color: var(--ink-950);
+        margin: 0 0 14px;
+    }
+    .section-head h2 em { font-style: italic; color: var(--amber-600); }
+    .section-head p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-500);
+        font-family: var(--font-ui);
     }
 
-    .section-heading h2 {
-        margin: 12px 0;
-        color: #173f35;
-        font-size: clamp(25px, 3vw, 34px);
-    }
-
-    .section-heading p {
-        max-width: 650px;
-        margin: 0 auto;
-        color: #64748b;
-        font-size: 15px;
-        line-height: 1.8;
-    }
-
-    /* Service cards */
-    .service-grid {
-        display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 24px;
-    }
-
-    .service-card {
+    /* ============================================================
+       TRUST STRIP — WITH BACKGROUND IMAGE
+       ============================================================ */
+    .trust-strip {
         position: relative;
-        padding: 30px 25px;
+        padding: 40px 0;
         overflow: hidden;
-        border: 1px solid #e5e0d4;
-        border-radius: 18px;
-        background: white;
-        box-shadow: 0 6px 24px rgba(23,63,53,0.06);
-        transition: 0.3s ease;
+        color: #fff;
     }
-
-    .service-card::before {
+    .trust-strip::before {
         content: "";
         position: absolute;
-        left: 0;
-        top: 0;
-        width: 100%;
-        height: 4px;
-        background: linear-gradient(90deg, #286b54, #bd9454);
-        transform: scaleX(0);
-        transform-origin: left;
-        transition: transform 0.3s ease;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+        background-attachment: fixed;
     }
-
-    .service-card:hover {
-        transform: translateY(-7px);
-        border-color: #d5c7a8;
-        box-shadow: 0 14px 32px rgba(40,107,84,0.12);
+    .trust-strip::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(15,29,51,.94), rgba(15,29,51,.85));
     }
-
-    .service-card:hover::before {
-        transform: scaleX(1);
-    }
-
-    .service-icon {
-        width: 62px;
-        height: 62px;
+    .trust-strip .wrap {
+        position: relative;
+        z-index: 1;
         display: flex;
         align-items: center;
+        gap: 40px;
+        flex-wrap: wrap;
         justify-content: center;
-        margin-bottom: 22px;
-        border-radius: 17px;
-        background: #efe5d1;
-        color: #286b54;
-        font-size: 31px;
     }
-
-    .service-card h3 {
-        margin-bottom: 13px;
-        color: #173f35;
-        font-size: 21px;
+    .trust-strip .label {
+        font-family: var(--font-ui);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+        color: var(--amber-400);
+        white-space: nowrap;
     }
-
-    .service-card p {
-        margin-bottom: 22px;
-        color: #64748b;
-        font-size: 14px;
-        line-height: 1.9;
-    }
-
-    .service-link {
-        color: #286b54;
-        text-decoration: none;
-        font-size: 14px;
-        font-weight: bold;
-    }
-
-    .service-link:hover {
-        color: #a47d3a;
-    }
-
-    /* Why choose us */
-    .why-section {
-        display: grid;
-        grid-template-columns: 1.1fr 2fr;
-        gap: 30px;
+    .trust-logos {
+        display: flex;
         align-items: center;
-        margin-top: 45px;
-        padding: 35px;
-        border-radius: 20px;
-        background: linear-gradient(110deg, #173f35, #8d7449, #bd9454);
-        color: white;
+        gap: 40px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .trust-logo {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 18px;
+        color: #e0e6ef;
+        opacity: .85;
+        letter-spacing: -0.3px;
+        transition: opacity .25s, color .25s;
+    }
+    .trust-logo:hover { opacity: 1; color: var(--amber-400); }
+
+    /* ============================================================
+       SPECIALTIES
+       ============================================================ */
+    .specialties {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 16px;
+    }
+    .specialty {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 14px;
+        padding: 26px 24px;
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-md);
+        text-decoration: none;
+        color: var(--ink-950);
+        transition: all .35s var(--ease);
+    }
+    .specialty:hover {
+        border-color: var(--amber-500);
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-sm);
+    }
+    .specialty-icon {
+        width: 48px; height: 48px;
+        border-radius: 12px;
+        background: var(--amber-100);
+        color: var(--amber-700);
+        display: grid;
+        place-items: center;
+        font-size: 22px;
+        transition: all .35s var(--ease);
+    }
+    .specialty:hover .specialty-icon {
+        background: var(--amber-500);
+        color: var(--ink-950);
+    }
+    .specialty-name {
+        font-family: var(--font-ui);
+        font-size: 15px;
+        font-weight: 700;
+        line-height: 1.3;
+    }
+    .specialty-meta {
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: var(--ink-500);
+        font-weight: 500;
+        margin-top: -8px;
     }
 
-    .why-intro h2 {
-        margin-bottom: 13px;
-        font-size: 27px;
+    /* ============================================================
+       DOCTORS — WITH REAL PHOTOS
+       ============================================================ */
+    .doctors {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 22px;
+    }
+    .doctor {
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
+        transition: all .35s var(--ease);
+        display: flex;
+        flex-direction: column;
+    }
+    .doctor:hover {
+        transform: translateY(-4px);
+        border-color: transparent;
+        box-shadow: var(--shadow-md);
+    }
+    .doctor-photo {
+        aspect-ratio: 4 / 5;
+        position: relative;
+        overflow: hidden;
+        background: var(--ink-900);
+    }
+    .doctor-photo img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        object-position: center top;
+        transition: transform .6s var(--ease);
+    }
+    .doctor:hover .doctor-photo img { transform: scale(1.05); }
+
+    .doctor-availability {
+        position: absolute;
+        top: 12px; left: 12px;
+        padding: 5px 10px;
+        border-radius: var(--radius-pill);
+        background: rgba(255,255,255,.94);
+        backdrop-filter: blur(6px);
+        font-family: var(--font-ui);
+        font-size: 11px;
+        font-weight: 700;
+        color: #1f7d72;
+        display: inline-flex;
+        align-items: center;
+        gap: 5px;
+        z-index: 1;
+        box-shadow: 0 4px 12px rgba(0,0,0,.12);
+    }
+    .doctor-availability .dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 2px rgba(34,197,94,.22);
+    }
+    .doctor-availability.busy { color: #a87519; }
+    .doctor-availability.busy .dot {
+        background: #f59e0b;
+        box-shadow: 0 0 0 2px rgba(245,158,11,.22);
     }
 
-    .why-intro p {
-        color: #f5f2e8;
-        font-size: 14px;
-        line-height: 1.9;
+    .doctor-body {
+        padding: 18px 20px 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        flex: 1;
     }
+    .doctor-name {
+        font-family: var(--font-ui);
+        font-weight: 700;
+        font-size: 16px;
+        color: var(--ink-950);
+        margin: 0;
+        letter-spacing: -0.2px;
+    }
+    .doctor-role {
+        font-family: var(--font-ui);
+        font-size: 13px;
+        color: var(--amber-700);
+        font-weight: 600;
+        margin: 0;
+    }
+    .doctor-meta {
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: var(--ink-500);
+        margin: 4px 0 14px;
+        line-height: 1.5;
+    }
+    .doctor-actions {
+        display: flex;
+        gap: 8px;
+        margin-top: auto;
+    }
+    .doctor-btn {
+        flex: 1;
+        padding: 9px 12px;
+        border-radius: var(--radius-pill);
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        font-weight: 600;
+        text-align: center;
+        text-decoration: none;
+        transition: all .25s;
+    }
+    .doctor-btn.primary {
+        background: var(--ink-950);
+        color: #fff;
+    }
+    .doctor-btn.primary:hover { background: var(--amber-500); color: var(--ink-950); }
+    .doctor-btn.secondary {
+        background: var(--ivory-100);
+        color: var(--ink-950);
+        border: 1px solid var(--ink-100);
+    }
+    .doctor-btn.secondary:hover { border-color: var(--ink-950); }
 
-    .benefit-grid {
+    /* ============================================================
+       TESTIMONIALS
+       ============================================================ */
+    .testimonials {
         display: grid;
         grid-template-columns: repeat(3, minmax(0, 1fr));
-        gap: 18px;
+        gap: 22px;
     }
-
-    .benefit {
-        padding: 15px 8px;
-        text-align: center;
-        border-left: 1px solid rgba(255,255,255,0.3);
+    .testimonial {
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-lg);
+        padding: 28px 26px;
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        transition: all .35s var(--ease);
     }
-
-    .benefit-icon {
-        margin-bottom: 12px;
-        font-size: 32px;
+    .testimonial:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-sm);
     }
-
-    .benefit h3 {
-        margin-bottom: 8px;
+    .stars {
+        color: var(--amber-500);
         font-size: 15px;
+        letter-spacing: 2px;
     }
-
-    .benefit p {
-        color: #f5f2e8;
-        font-size: 12px;
+    .testimonial blockquote {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 14.5px;
         line-height: 1.7;
+        color: var(--ink-700);
     }
-
-    /* Bottom appointment banner */
-    .appointment-banner {
+    .testimonial-author {
         display: flex;
         align-items: center;
-        justify-content: space-between;
-        gap: 20px;
-        margin-top: 25px;
-        padding: 27px 30px;
-        border: 1px solid #e6decb;
-        border-radius: 17px;
-        background: linear-gradient(110deg, #e4f7ff, #f8f6ef);
+        gap: 12px;
+        margin-top: auto;
+        padding-top: 16px;
+        border-top: 1px solid var(--ink-100);
     }
-
-    .appointment-text h2 {
-        margin-bottom: 8px;
-        color: #173f35;
-        font-size: 23px;
-    }
-
-    .appointment-text p {
-        color: #64736a;
-        font-size: 14px;
-        line-height: 1.8;
-    }
-
-    .appointment-btn {
-        display: inline-block;
+    .author-avatar {
+        width: 44px; height: 44px;
+        border-radius: 50%;
+        overflow: hidden;
         flex-shrink: 0;
-        padding: 14px 22px;
-        border-radius: 30px;
-        background: linear-gradient(90deg, #286b54, #bd9454);
-        color: white;
+        border: 2px solid var(--ivory-200);
+    }
+    .author-avatar img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+    }
+    .author-name {
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink-950);
+        margin: 0;
+    }
+    .author-meta {
+        font-family: var(--font-ui);
+        font-size: 12px;
+        color: var(--ink-500);
+        margin: 2px 0 0;
+    }
+
+    /* ============================================================
+       HEALTH RESOURCES — WITH PHOTO COVERS
+       ============================================================ */
+    .resources {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+    .resource {
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-lg);
+        overflow: hidden;
         text-decoration: none;
-        font-size: 14px;
-        font-weight: bold;
-        transition: 0.3s ease;
+        color: var(--ink-950);
+        display: flex;
+        flex-direction: column;
+        transition: all .35s var(--ease);
+    }
+    .resource:hover {
+        transform: translateY(-4px);
+        box-shadow: var(--shadow-md);
+        border-color: transparent;
+    }
+    .resource-cover {
+        aspect-ratio: 16 / 10;
+        position: relative;
+        overflow: hidden;
+        background: var(--ink-900);
+    }
+    .resource-cover img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform .6s var(--ease);
+    }
+    .resource:hover .resource-cover img { transform: scale(1.06); }
+    .resource-cover::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 40%, rgba(15,29,51,.35) 100%);
+        pointer-events: none;
     }
 
-    .appointment-btn:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 7px 18px rgba(40,107,84,0.22);
+    .resource-body {
+        padding: 22px 22px 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+    .resource-tag {
+        font-family: var(--font-ui);
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1.2px;
+        text-transform: uppercase;
+        color: var(--amber-700);
+    }
+    .resource h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 19px;
+        line-height: 1.3;
+        letter-spacing: -0.3px;
+        margin: 0;
+    }
+    .resource p {
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        line-height: 1.65;
+        color: var(--ink-500);
+        margin: 0;
+    }
+    .resource-meta {
+        font-family: var(--font-ui);
+        font-size: 12px;
+        color: var(--ink-500);
+        margin-top: 8px;
+        display: flex;
+        gap: 14px;
     }
 
-    /* Responsive design */
-    @media (max-width: 900px) {
-        .hero-section {
-            padding: 45px 30px;
-        }
-
-        .hero-visual {
-            flex-basis: 190px;
-            min-height: 190px;
-        }
-
-        .medical-circle {
-            width: 175px;
-            height: 175px;
-            font-size: 78px;
-        }
-
-        .service-grid {
-            grid-template-columns: repeat(2, minmax(0, 1fr));
-        }
-
-        .why-section {
-            grid-template-columns: 1fr;
-        }
-
-        .benefit {
-            border-left: none;
-        }
+    /* ============================================================
+       CTA BANNER — WITH BACKGROUND IMAGE
+       ============================================================ */
+    .cta-banner {
+        position: relative;
+        margin: 24px 0 0;
+        padding: 64px 56px;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        color: #fff;
+    }
+    .cta-banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+    }
+    .cta-banner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(100deg,
+                rgba(15,29,51,.94) 0%,
+                rgba(15,29,51,.78) 55%,
+                rgba(15,29,51,.55) 100%),
+            radial-gradient(circle at 100% 0%, rgba(224,165,46,.25), transparent 55%);
+    }
+    .cta-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 32px;
+    }
+    .cta-banner h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(28px, 3.4vw, 40px);
+        line-height: 1.14;
+        letter-spacing: -0.6px;
+        margin: 0 0 12px;
+        text-shadow: 0 2px 16px rgba(0,0,0,.3);
+    }
+    .cta-banner h2 em { color: var(--amber-400); font-style: italic; }
+    .cta-banner p {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 15.5px;
+        line-height: 1.7;
+        color: #d4dbe6;
+        max-width: 520px;
+    }
+    .cta-banner .actions {
+        display: flex;
+        gap: 10px;
+        flex-shrink: 0;
+        flex-wrap: wrap;
     }
 
-    @media (max-width: 600px) {
-        .hero-section {
-            flex-direction: column;
-            padding: 35px 22px;
-            text-align: center;
-        }
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1080px) {
+        .hero .wrap { grid-template-columns: 1fr; gap: 40px; }
+        .hero { padding: 72px 0 64px; min-height: auto; }
+        .hero-trust { grid-template-columns: repeat(3, 1fr); max-width: none; }
 
-        .hero-content h1 {
-            font-size: 31px;
-        }
+        .specialties { grid-template-columns: repeat(3, 1fr); }
+        .doctors { grid-template-columns: repeat(2, 1fr); }
+        .testimonials, .resources { grid-template-columns: 1fr; }
 
-        .hero-content p {
-            font-size: 14px;
-        }
+        .cta-inner { grid-template-columns: 1fr; }
+        .cta-banner { padding: 48px 36px; }
+    }
 
-        .hero-buttons {
-            justify-content: center;
-        }
+    @media (max-width: 720px) {
+        .wrap { padding: 0 18px; }
+        .section { padding: 56px 0; }
+        .section-head { margin-bottom: 36px; }
 
-        .hero-btn {
-            padding: 12px 15px;
-            font-size: 12px;
-        }
+        .utility-bar .wrap,
+        .emergency-banner .wrap { padding: 10px 18px; }
 
-        .hero-visual {
-            flex-basis: auto;
-            min-height: 160px;
-        }
+        .hero { padding: 56px 0 48px; }
+        .hero h1 { font-size: 36px; letter-spacing: -0.8px; }
+        .hero-lead { font-size: 15px; }
+        .hero-actions .btn { flex: 1; justify-content: center; }
 
-        .medical-circle {
-            width: 150px;
-            height: 150px;
-            font-size: 68px;
-        }
+        .hero-trust { grid-template-columns: 1fr; gap: 10px; }
 
-        .floating-badge {
-            right: -20px;
-            bottom: 8px;
-            font-size: 11px;
-        }
+        .quick-grid { grid-template-columns: 1fr 1fr; }
+        .quick-panel { padding: 22px; }
 
-        .service-grid {
-            grid-template-columns: 1fr;
-        }
+        .specialties { grid-template-columns: repeat(2, 1fr); }
+        .doctors { grid-template-columns: 1fr; }
 
-        .section-heading {
-            margin-top: 40px;
-        }
+        .trust-strip::before { background-attachment: scroll; }
+        .trust-strip .wrap { gap: 20px; }
+        .trust-logos { gap: 22px; }
+        .trust-logo { font-size: 15px; }
 
-        .why-section {
-            padding: 25px 18px;
-        }
+        .cta-banner { padding: 40px 28px; }
+        .cta-inner .actions { width: 100%; }
+        .cta-inner .actions .btn { flex: 1; justify-content: center; }
+    }
 
-        .benefit-grid {
-            grid-template-columns: 1fr;
-        }
-
-        .appointment-banner {
-            flex-direction: column;
-            align-items: flex-start;
-            padding: 25px 20px;
-        }
-
-        .appointment-btn {
-            text-align: center;
-            width: 100%;
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: .001ms !important;
+            animation-iteration-count: 1 !important;
+            transition-duration: .001ms !important;
         }
     }
 </style>
 
-<div class="home-container">
+<!-- ============================================================
+     UTILITY BAR
+     ============================================================ -->
+<div class="utility-bar">
+    <div class="wrap">
+        <div class="utility-left">
+            <span class="emergency">
+                <span class="dot"></span>
+                Emergency: <a href="tel:+919876543210">+91 98765 43210</a>
+            </span>
+            <span>Mon–Sat: 8:00 AM – 9:00 PM</span>
+            <span>Sun: 9:00 AM – 5:00 PM</span>
+        </div>
+        <div class="utility-right">
+            <a href="/patient_dashboard/">Patient Portal</a>
+            <a href="/contact/">Locations</a>
+            <a href="tel:+919876543210">Ambulance</a>
+        </div>
+    </div>
+</div>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
+<!-- ============================================================
+     EMERGENCY BANNER
+     ============================================================ -->
+<div class="emergency-banner">
+    <div class="wrap">
+        <span class="label">Emergency</span>
+        <span><strong>24/7 Emergency &amp; Trauma Care available.</strong> No appointment needed — walk in or call our emergency line.</span>
+        <a href="tel:+919876543210">Call +91 98765 43210 →</a>
+    </div>
+</div>
 
-        <div class="hero-content">
+<!-- ============================================================
+     HERO — BACKGROUND IMAGE
+     ============================================================ -->
+<section class="hero">
+    <div class="hero-bg"></div>
 
-            <span class="welcome-label">
-                ♡ &nbsp; YOUR HEALTH, OUR PRIORITY
+    <div class="wrap">
+        <div>
+            <span class="hero-eyebrow">
+                <span class="dot"></span>
+                Multi-Specialty Hospital in Kochi
             </span>
 
             <h1>
-                Welcome to <span>MediCare Hospital</span>
+                Trusted care for<br>
+                <em>every stage</em> of life.
             </h1>
 
-            <p>
-                Your health is our priority. We provide quality healthcare
-                with experienced doctors and modern medical facilities.
+            <p class="hero-lead">
+                From routine check-ups to complex surgeries, our experienced
+                specialists and modern facilities are here for you and your
+                family — with compassion you can feel.
             </p>
 
-            <div class="hero-buttons">
-                <a href="/doctors/" class="hero-btn primary">
-                    ♙ &nbsp; Doctors
+            <div class="hero-actions">
+                <a href="/booking/" class="btn btn-amber">
+                    Book an Appointment →
                 </a>
-
-                <a href="/departments/" class="hero-btn secondary">
-                    ✚ &nbsp; Departments
-                </a>
-
-                <a href="/booking/" class="hero-btn secondary">
-                    ▦ &nbsp; Book Appointment
-                </a>
-                <a href="/smart_recommendation/" class="hero-btn secondary">
-                    ♡ &nbsp; Smart Recommendation
+                <a href="/doctors/" class="btn btn-ghost">
+                    Find a Doctor
                 </a>
             </div>
 
-        </div>
-
-        <div class="hero-visual">
-            <div class="medical-circle">⚕</div>
-
-            <div class="floating-badge">
-                ♡ &nbsp; Caring for You
+            <div class="hero-trust">
+                <div class="hero-trust-item">
+                    <div class="icon">✓</div>
+                    <div>
+                        <strong>NABH Accredited</strong>
+                        <span>Certified quality</span>
+                    </div>
+                </div>
+                <div class="hero-trust-item">
+                    <div class="icon">★</div>
+                    <div>
+                        <strong>4.8 / 5 Rating</strong>
+                        <span>2,400+ reviews</span>
+                    </div>
+                </div>
+                <div class="hero-trust-item">
+                    <div class="icon">♡</div>
+                    <div>
+                        <strong>15,000+ Patients</strong>
+                        <span>Treated this year</span>
+                    </div>
+                </div>
             </div>
         </div>
 
-    </section>
+        <!-- Quick action panel -->
+        <div class="quick-panel">
+            <h2>How can we help?</h2>
+            <p class="sub">Choose what you need and we'll get you there fast.</p>
 
-    <!-- Healthcare Services -->
-    <section>
+            <div class="quick-grid">
+                <a href="/booking/" class="quick-tile">
+                    <div class="q-icon">▦</div>
+                    <div class="q-label">Book Appointment</div>
+                    <div class="q-meta">Same-week slots</div>
+                </a>
 
-        <div class="section-heading">
-            <span class="eyebrow">OUR HEALTHCARE SERVICES</span>
+                <a href="/doctors/" class="quick-tile">
+                    <div class="q-icon">♙</div>
+                    <div class="q-label">Find a Doctor</div>
+                    <div class="q-meta">120+ specialists</div>
+                </a>
 
-            <h2>Committed to Your Health & Well-being</h2>
+                <a href="/departments/" class="quick-tile">
+                    <div class="q-icon">✚</div>
+                    <div class="q-label">Departments</div>
+                    <div class="q-meta">12 specialties</div>
+                </a>
 
-            <p>
-                We provide healthcare information and access to medical
-                professionals to help you explore the services you need.
-            </p>
-        </div>
-
-        <div class="service-grid">
-
-            <div class="service-card">
-                <div class="service-icon">♙</div>
-
-                <h3>Expert Doctors</h3>
-
-                <p>
-                    Explore our doctors and find professional medical
-                    support for your healthcare needs.
-                </p>
-
-                <a href="/doctors/" class="service-link">
-                    Explore Doctors →
+                <a href="tel:+919876543210" class="quick-tile urgent">
+                    <div class="q-icon">☎</div>
+                    <div class="q-label">Emergency</div>
+                    <div class="q-meta">24/7 · Call now</div>
                 </a>
             </div>
-
-            <div class="service-card">
-                <div class="service-icon">✚</div>
-
-                <h3>Medical Departments</h3>
-
-                <p>
-                    Discover our hospital departments and the medical
-                    services available to patients.
-                </p>
-
-                <a href="/departments/" class="service-link">
-                    View Departments →
-                </a>
-            </div>
-
-            <div class="service-card">
-                <div class="service-icon">♡</div>
-
-                <h3>Patient Care</h3>
-
-                <p>
-                    We focus on compassionate care, patient comfort,
-                    and a welcoming healthcare experience.
-                </p>
-
-                <a href="/about/" class="service-link">
-                    About MediCare →
-                </a>
-            </div>
-
         </div>
+    </div>
+</section>
 
-    </section>
-
-    <!-- Why Choose MediCare -->
-    <section class="why-section">
-
-        <div class="why-intro">
-            <h2>Why Choose MediCare?</h2>
-
-            <p>
-                We are committed to providing quality healthcare services
-                and a welcoming experience for patients and their families.
-            </p>
+<!-- ============================================================
+     TRUST STRIP — BACKGROUND IMAGE
+     ============================================================ -->
+<div class="trust-strip">
+    <div class="wrap">
+        <span class="label">Recognized by</span>
+        <div class="trust-logos">
+            <span class="trust-logo">NABH</span>
+            <span class="trust-logo">NABL</span>
+            <span class="trust-logo">ISO 9001</span>
+            <span class="trust-logo">Star Health</span>
+            <span class="trust-logo">HDFC Ergo</span>
+            <span class="trust-logo">ICICI Lombard</span>
         </div>
-
-        <div class="benefit-grid">
-
-            <div class="benefit">
-                <div class="benefit-icon">♙</div>
-                <h3>Medical Professionals</h3>
-                <p>Explore our doctors</p>
-            </div>
-
-            <div class="benefit">
-                <div class="benefit-icon">✚</div>
-                <h3>Medical Services</h3>
-                <p>Explore our departments</p>
-            </div>
-
-            <div class="benefit">
-                <div class="benefit-icon">♡</div>
-                <h3>Patient-focused</h3>
-                <p>Care and comfort</p>
-            </div>
-
-        </div>
-
-    </section>
-
-    <!-- Appointment Banner -->
-    <section class="appointment-banner">
-
-        <div class="appointment-text">
-            <h2>⌁ &nbsp; Your Health Matters</h2>
-
-            <p>
-                MediCare Hospital — Caring for You, Every Day.
-                Explore our appointment booking page to get started.
-            </p>
-        </div>
-
-        <a href="/booking/" class="appointment-btn">
-            ▦ &nbsp; Book Appointment →
-        </a>
-
-    </section>
-
+    </div>
 </div>
+
+<!-- ============================================================
+     SPECIALTIES
+     ============================================================ -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Centres of Excellence</span>
+            <h2>Specialized care, <em>close to home</em>.</h2>
+            <p>
+                Our departments bring together leading specialists, advanced
+                diagnostics, and coordinated care under one roof.
+            </p>
+        </div>
+
+        <div class="specialties">
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">♥</div>
+                <div class="specialty-name">Cardiology</div>
+                <div class="specialty-meta">Heart &amp; vascular care</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">⚕</div>
+                <div class="specialty-name">Neurology</div>
+                <div class="specialty-meta">Brain &amp; nervous system</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">🦴</div>
+                <div class="specialty-name">Orthopedics</div>
+                <div class="specialty-meta">Bones, joints &amp; spine</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">👶</div>
+                <div class="specialty-name">Pediatrics</div>
+                <div class="specialty-meta">Child health</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">⚕</div>
+                <div class="specialty-name">Oncology</div>
+                <div class="specialty-meta">Cancer care</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">✚</div>
+                <div class="specialty-name">General Surgery</div>
+                <div class="specialty-meta">Surgical care</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">👁</div>
+                <div class="specialty-name">Ophthalmology</div>
+                <div class="specialty-meta">Eye care</div>
+            </a>
+            <a href="/departments/" class="specialty">
+                <div class="specialty-icon">🦷</div>
+                <div class="specialty-name">Dental Care</div>
+                <div class="specialty-meta">Oral health</div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     DOCTORS — REAL PHOTOS
+     ============================================================ -->
+<section class="section section-alt">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Meet Our Specialists</span>
+            <h2>Doctors you can <em>trust</em>.</h2>
+            <p>
+                Experienced, board-certified physicians across every major
+                specialty — many available for same-week appointments.
+            </p>
+        </div>
+
+        <div class="doctors">
+            <article class="doctor">
+                <div class="doctor-photo">
+                    <img
+                        src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80"
+                        alt="Dr. Rohan Menon, Cardiologist"
+                        loading="lazy">
+                    <span class="doctor-availability">
+                        <span class="dot"></span> Available today
+                    </span>
+                </div>
+                <div class="doctor-body">
+                    <h3 class="doctor-name">Dr. Rohan Menon</h3>
+                    <p class="doctor-role">Cardiologist</p>
+                    <p class="doctor-meta">MD, DM (Cardiology) · 15+ years</p>
+                    <div class="doctor-actions">
+                        <a href="/booking/" class="doctor-btn primary">Book</a>
+                        <a href="/doctors/" class="doctor-btn secondary">Profile</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="doctor">
+                <div class="doctor-photo">
+                    <img
+                        src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80"
+                        alt="Dr. Aisha Verma, Neurologist"
+                        loading="lazy">
+                    <span class="doctor-availability busy">
+                        <span class="dot"></span> Next: Thu
+                    </span>
+                </div>
+                <div class="doctor-body">
+                    <h3 class="doctor-name">Dr. Aisha Verma</h3>
+                    <p class="doctor-role">Neurologist</p>
+                    <p class="doctor-meta">MD, DM (Neurology) · 12+ years</p>
+                    <div class="doctor-actions">
+                        <a href="/booking/" class="doctor-btn primary">Book</a>
+                        <a href="/doctors/" class="doctor-btn secondary">Profile</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="doctor">
+                <div class="doctor-photo">
+                    <img
+                        src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80"
+                        alt="Dr. Suresh Kumar, Orthopedic Surgeon"
+                        loading="lazy">
+                    <span class="doctor-availability">
+                        <span class="dot"></span> Available today
+                    </span>
+                </div>
+                <div class="doctor-body">
+                    <h3 class="doctor-name">Dr. Suresh Kumar</h3>
+                    <p class="doctor-role">Orthopedic Surgeon</p>
+                    <p class="doctor-meta">MS (Ortho) · 18+ years</p>
+                    <div class="doctor-actions">
+                        <a href="/booking/" class="doctor-btn primary">Book</a>
+                        <a href="/doctors/" class="doctor-btn secondary">Profile</a>
+                    </div>
+                </div>
+            </article>
+
+            <article class="doctor">
+                <div class="doctor-photo">
+                    <img
+                        src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80"
+                        alt="Dr. Priya Nair, Pediatrician"
+                        loading="lazy">
+                    <span class="doctor-availability busy">
+                        <span class="dot"></span> Next: Mon
+                    </span>
+                </div>
+                <div class="doctor-body">
+                    <h3 class="doctor-name">Dr. Priya Nair</h3>
+                    <p class="doctor-role">Pediatrician</p>
+                    <p class="doctor-meta">MD (Pediatrics) · 10+ years</p>
+                    <div class="doctor-actions">
+                        <a href="/booking/" class="doctor-btn primary">Book</a>
+                        <a href="/doctors/" class="doctor-btn secondary">Profile</a>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     TESTIMONIALS
+     ============================================================ -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Patient Stories</span>
+            <h2>What our patients <em>say</em>.</h2>
+            <p>Real experiences from people we've had the privilege to care for.</p>
+        </div>
+
+        <div class="testimonials">
+            <article class="testimonial">
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                    "From the front desk to the recovery room, everyone treated
+                    me like family. My surgery went smoothly and the follow-up
+                    care was outstanding."
+                </blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&w=100&q=80" alt="Meera S." loading="lazy">
+                    </div>
+                    <div>
+                        <p class="author-name">Meera S.</p>
+                        <p class="author-meta">Cardiology patient · Kochi</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="testimonial">
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                    "I was nervous about my son's treatment, but the pediatric
+                    team explained every step clearly. We felt informed and
+                    supported throughout."
+                </blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=100&q=80" alt="Rahul K." loading="lazy">
+                    </div>
+                    <div>
+                        <p class="author-name">Rahul K.</p>
+                        <p class="author-meta">Parent · Ernakulam</p>
+                    </div>
+                </div>
+            </article>
+
+            <article class="testimonial">
+                <div class="stars">★★★★★</div>
+                <blockquote>
+                    "Booking online was easy and my appointment started right
+                    on time. The doctor listened carefully and I never felt
+                    rushed. Highly recommend."
+                </blockquote>
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?auto=format&fit=crop&w=100&q=80" alt="Anjali P." loading="lazy">
+                    </div>
+                    <div>
+                        <p class="author-name">Anjali P.</p>
+                        <p class="author-meta">Neurology patient · Thrissur</p>
+                    </div>
+                </div>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     HEALTH RESOURCES — PHOTO COVERS
+     ============================================================ -->
+<section class="section section-alt">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Health Resources</span>
+            <h2>Advice from our <em>experts</em>.</h2>
+            <p>Practical guidance to help you and your family stay well.</p>
+        </div>
+
+        <div class="resources">
+            <a href="/about/" class="resource">
+                <div class="resource-cover">
+                    <img src="https://images.unsplash.com/photo-1505751172876-fa1923c5c528?auto=format&fit=crop&w=800&q=80" alt="Heart health" loading="lazy">
+                </div>
+                <div class="resource-body">
+                    <span class="resource-tag">Heart Health</span>
+                    <h3>5 everyday habits that protect your heart</h3>
+                    <p>Small, sustainable changes that make a measurable difference to cardiovascular health.</p>
+                    <div class="resource-meta">
+                        <span>5 min read</span>
+                        <span>Cardiology</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/about/" class="resource">
+                <div class="resource-cover">
+                    <img src="https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=800&q=80" alt="Child health" loading="lazy">
+                </div>
+                <div class="resource-body">
+                    <span class="resource-tag">Child Health</span>
+                    <h3>When should you worry about a child's fever?</h3>
+                    <p>A pediatrician's guide to symptoms, timing, and when to seek urgent care.</p>
+                    <div class="resource-meta">
+                        <span>4 min read</span>
+                        <span>Pediatrics</span>
+                    </div>
+                </div>
+            </a>
+
+            <a href="/about/" class="resource">
+                <div class="resource-cover">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=800&q=80" alt="Preventive care" loading="lazy">
+                </div>
+                <div class="resource-body">
+                    <span class="resource-tag">Preventive Care</span>
+                    <h3>The annual check-up: what to ask your doctor</h3>
+                    <p>Get more from your yearly visit with these focused questions.</p>
+                    <div class="resource-meta">
+                        <span>6 min read</span>
+                        <span>General Medicine</span>
+                    </div>
+                </div>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     CTA BANNER — BACKGROUND IMAGE
+     ============================================================ -->
+<section class="section-tight">
+    <div class="wrap">
+        <div class="cta-banner">
+            <div class="cta-inner">
+                <div>
+                    <h2>Ready to take the <em>next step</em>?</h2>
+                    <p>Book an appointment online in under a minute, or call our team — we're here to help.</p>
+                </div>
+                <div class="actions">
+                    <a href="/booking/" class="btn btn-amber">Book Appointment →</a>
+                    <a href="tel:+919876543210" class="btn btn-ghost">Call Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

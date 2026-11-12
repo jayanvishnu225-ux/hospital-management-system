@@ -1,158 +1,645 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Book an Appointment | MediCare{% endblock %}
+{% block title %}Book an Appointment | MediCare Hospital{% endblock %}
 
 {% block content %}
 
 <style>
-    .booking-container {
-        max-width: 750px;
-        margin: 20px auto;
-        padding: 40px;
-        background: #ffffff;
-        border-radius: 18px;
-        box-shadow: 0 10px 35px rgba(40, 107, 84, 0.12);
-        border-top: 5px solid #bd9454;
+    /* ============================================================
+       TOKENS (match home & about)
+       ============================================================ */
+    :root {
+        --ink-950: #0f1d33;
+        --ink-900: #1b2d4f;
+        --ink-700: #3a4a68;
+        --ink-500: #5f6f88;
+        --ink-300: #a8b2c4;
+        --ink-100: #e4ddd0;
+        --ink-050: #f2ece1;
+
+        --ivory-050: #fdfbf7;
+        --ivory-100: #fbf8f3;
+        --ivory-200: #f2ece1;
+
+        --amber-700: #a87519;
+        --amber-600: #c78d1f;
+        --amber-500: #e0a52e;
+        --amber-400: #f0bd55;
+        --amber-200: #fbe2ae;
+        --amber-100: #fdf2d5;
+
+        --teal-600: #1f7d72;
+        --teal-500: #2a9d8f;
+        --teal-100: #d6f2ee;
+
+        --red-600: #b22b1f;
+        --red-500: #e63946;
+        --red-100: #fde4e2;
+
+        --radius-sm: 8px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --radius-xl: 28px;
+        --radius-pill: 999px;
+
+        --shadow-xs: 0 1px 2px rgba(15,29,51,.06);
+        --shadow-sm: 0 4px 16px rgba(15,29,51,.07);
+        --shadow-md: 0 12px 32px rgba(15,29,51,.10);
+        --shadow-lg: 0 24px 60px rgba(15,29,51,.18);
+
+        --ease: cubic-bezier(.22,1,.36,1);
+        --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+        --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .booking-container h2 {
-        text-align: center;
-        color: #173f35;
-        font-size: 30px;
-        margin-bottom: 12px;
-        font-weight: 700;
-    }
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
 
-    .booking-container h2::after {
+    /* ============================================================
+       PAGE SHELL — decorative glow blobs
+       ============================================================ */
+    .booking-page {
+        position: relative;
+        padding: 64px 0 80px;
+        overflow: hidden;
+        background: var(--ivory-100);
+    }
+    .booking-page::before,
+    .booking-page::after {
         content: "";
-        display: block;
-        width: 70px;
-        height: 4px;
-        background: #bd9454;
-        margin: 14px auto 28px;
-        border-radius: 5px;
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: .5;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .booking-page::before {
+        width: 420px; height: 420px;
+        top: -120px; right: -100px;
+        background: radial-gradient(circle, #fbe2ae, transparent 70%);
+    }
+    .booking-page::after {
+        width: 360px; height: 360px;
+        bottom: -120px; left: -80px;
+        background: radial-gradient(circle, #d6f2ee, transparent 70%);
+    }
+    .booking-page .wrap {
+        position: relative;
+        z-index: 1;
     }
 
-    .booking-form p {
-        margin-bottom: 20px;
-        color: #334155;
+    /* ============================================================
+       PAGE HEAD
+       ============================================================ */
+    .booking-head {
+        max-width: 660px;
+        margin: 0 auto 44px;
+        text-align: center;
+    }
+    .booking-kicker {
+        display: inline-block;
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--amber-700);
+        margin-bottom: 14px;
+    }
+    .booking-head h1 {
+        font-family: var(--font-display);
         font-weight: 600;
-        font-size: 15px;
+        font-size: clamp(32px, 4.2vw, 46px);
+        line-height: 1.1;
+        letter-spacing: -0.8px;
+        color: var(--ink-950);
+        margin: 0 0 14px;
+    }
+    .booking-head h1 em { font-style: italic; color: var(--amber-600); }
+    .booking-head p {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-500);
     }
 
+    /* ============================================================
+       TWO-COLUMN LAYOUT
+       ============================================================ */
+    .booking-grid {
+        display: grid;
+        grid-template-columns: 1.35fr 1fr;
+        gap: 32px;
+        align-items: start;
+    }
+
+    /* ============================================================
+       FORM CARD
+       ============================================================ */
+    .booking-card {
+        position: relative;
+        background: #fff;
+        border-radius: var(--radius-xl);
+        padding: 44px 40px 40px;
+        border: 1px solid var(--ink-100);
+        box-shadow: var(--shadow-md);
+        overflow: hidden;
+    }
+    .booking-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 5px;
+        background: linear-gradient(90deg, var(--amber-500), var(--teal-500));
+    }
+
+    .form-step {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 28px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid var(--ink-100);
+    }
+    .form-step .step-num {
+        width: 32px; height: 32px;
+        border-radius: 50%;
+        background: var(--amber-500);
+        color: var(--ink-950);
+        display: grid;
+        place-items: center;
+        font-family: var(--font-ui);
+        font-size: 13px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+    .form-step .step-title {
+        font-family: var(--font-ui);
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--ink-950);
+        margin: 0;
+    }
+    .form-step .step-sub {
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: var(--ink-500);
+        margin: 2px 0 0;
+    }
+
+    /* ---------- Django form field styling ---------- */
+    .booking-form p {
+        margin: 0 0 20px;
+        display: flex;
+        flex-direction: column;
+    }
     .booking-form label {
         display: block;
         margin-bottom: 8px;
-        color: #173f35;
+        font-family: var(--font-ui);
+        font-size: 13.5px;
         font-weight: 600;
+        color: var(--ink-950);
+        letter-spacing: -0.1px;
     }
-
-    .booking-form input,
+    .booking-form input[type="text"],
+    .booking-form input[type="email"],
+    .booking-form input[type="tel"],
+    .booking-form input[type="date"],
+    .booking-form input[type="number"],
+    .booking-form input[type="time"],
+    .booking-form input[type="datetime-local"],
+    .booking-form input[type="password"],
     .booking-form select,
     .booking-form textarea {
         width: 100%;
         padding: 13px 15px;
-        border: 1px solid #d8d5ca;
-        border-radius: 9px;
-        background: #fffefa;
-        color: #333;
-        font-family: Arial, sans-serif;
-        font-size: 15px;
+        border: 1px solid var(--ink-100);
+        border-radius: 10px;
+        background: var(--ivory-050);
+        color: var(--ink-950);
+        font-family: var(--font-ui);
+        font-size: 14.5px;
         outline: none;
-        transition: 0.3s ease;
+        transition: all .25s var(--ease);
+        box-sizing: border-box;
     }
-
     .booking-form input:focus,
     .booking-form select:focus,
     .booking-form textarea:focus {
-        border-color: #bd9454;
-        background: #ffffff;
-        box-shadow: 0 0 0 3px rgba(189, 148, 84, 0.12);
+        border-color: var(--amber-500);
+        background: #fff;
+        box-shadow: 0 0 0 4px rgba(224,165,46,.15);
     }
-
     .booking-form textarea {
         min-height: 110px;
         resize: vertical;
+        line-height: 1.6;
     }
 
-    .booking-form ul.errorlist {
-        color: #dc2626;
-        margin: 6px 0 10px 18px;
-        font-size: 13px;
+    .booking-form input::placeholder,
+    .booking-form textarea::placeholder {
+        color: var(--ink-300);
     }
 
-    .booking-form .btn.primary {
+    /* Help text that Django renders as <span class="helptext"> */
+    .booking-form .helptext {
         display: block;
-        width: 100%;
-        padding: 15px;
-        margin-top: 15px;
-        border: none;
-        border-radius: 10px;
-        background: linear-gradient(90deg, #286b54, #bd9454);
-        color: #ffffff;
-        font-size: 16px;
-        font-weight: bold;
-        text-transform: capitalize;
-        cursor: pointer;
-        transition: transform 0.3s ease,
-                    box-shadow 0.3s ease;
+        margin-top: 6px;
+        font-family: var(--font-ui);
+        font-size: 12px;
+        color: var(--ink-500);
+        line-height: 1.5;
     }
 
-    .booking-form .btn.primary:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 7px 18px rgba(40, 107, 84, 0.25);
-    }
-
-    .booking-form .btn.primary:active {
-        transform: translateY(0);
-    }
-
-    .booking-container p[style] {
-        background: #fff1f2;
-        border: 1px solid #fecdd3;
-        padding: 14px;
+    /* Errors */
+    .booking-form .errorlist,
+    .booking-form ul.errorlist {
+        list-style: none;
+        margin: 8px 0 0;
+        padding: 10px 12px;
+        background: var(--red-100);
+        border: 1px solid #f5c9c5;
+        border-left: 3px solid var(--red-500);
         border-radius: 8px;
-        color: #be123c !important;
+        color: var(--red-600);
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        font-weight: 500;
     }
 
-    /* Responsive design */
-    @media (max-width: 768px) {
-        .booking-container {
-            margin: 10px auto;
-            padding: 25px 20px;
-        }
+    /* Submit button */
+    .booking-submit {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 9px;
+        width: 100%;
+        margin-top: 16px;
+        padding: 16px 24px;
+        border: none;
+        border-radius: var(--radius-pill);
+        background: var(--ink-950);
+        color: #fff;
+        font-family: var(--font-ui);
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.2px;
+        cursor: pointer;
+        transition: all .3s var(--ease);
+    }
+    .booking-submit:hover {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        transform: translateY(-2px);
+        box-shadow: 0 12px 28px rgba(224,165,46,.35);
+    }
+    .booking-submit:active { transform: translateY(0); }
 
-        .booking-container h2 {
-            font-size: 25px;
-        }
+    .booking-submit .arrow {
+        transition: transform .3s var(--ease);
+    }
+    .booking-submit:hover .arrow { transform: translateX(3px); }
 
-        .booking-form input,
-        .booking-form select,
-        .booking-form textarea {
-            padding: 12px;
+    .form-note {
+        margin: 16px 0 0;
+        text-align: center;
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: var(--ink-500);
+        line-height: 1.6;
+    }
+    .form-note a {
+        color: var(--amber-700);
+        font-weight: 600;
+        text-decoration: underline;
+    }
+
+    /* Fallback when form variable missing */
+    .form-error {
+        padding: 18px 20px;
+        background: var(--red-100);
+        border: 1px solid #f5c9c5;
+        border-left: 4px solid var(--red-500);
+        border-radius: 10px;
+        color: var(--red-600);
+        font-family: var(--font-ui);
+        font-size: 14px;
+        text-align: center;
+    }
+
+    /* ============================================================
+       SIDEBAR
+       ============================================================ */
+    .booking-sidebar {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+
+    .side-card {
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-lg);
+        padding: 26px 24px;
+        transition: all .35s var(--ease);
+    }
+    .side-card:hover {
+        box-shadow: var(--shadow-sm);
+    }
+
+    .side-card h3 {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--ink-950);
+        margin: 0 0 14px;
+    }
+    .side-card h3 .ico {
+        width: 32px; height: 32px;
+        border-radius: 9px;
+        background: var(--amber-100);
+        color: var(--amber-700);
+        display: grid;
+        place-items: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+    .side-card p {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        line-height: 1.7;
+        color: var(--ink-500);
+    }
+
+    /* Emergency card */
+    .side-card.urgent {
+        background: linear-gradient(160deg, #fff 0%, var(--red-100) 100%);
+        border-color: #f5c9c5;
+    }
+    .side-card.urgent h3 .ico {
+        background: var(--red-500);
+        color: #fff;
+    }
+    .side-card.urgent .phone {
+        display: inline-block;
+        margin-top: 10px;
+        font-family: var(--font-display);
+        font-size: 22px;
+        font-weight: 600;
+        color: var(--red-600);
+        text-decoration: none;
+        letter-spacing: -0.4px;
+    }
+    .side-card.urgent .phone:hover { color: var(--red-500); }
+    .side-card.urgent .small {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #7a1f18;
+        font-weight: 500;
+    }
+
+    /* Hours list */
+    .hours-list {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .hours-list li {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 0;
+        border-bottom: 1px dashed var(--ink-100);
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+    }
+    .hours-list li:last-child { border-bottom: none; }
+    .hours-list .day { color: var(--ink-700); font-weight: 500; }
+    .hours-list .time { color: var(--ink-950); font-weight: 700; }
+    .hours-list .time.closed { color: var(--red-600); }
+
+    /* Checklist */
+    .checklist {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+    .checklist li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        line-height: 1.5;
+        color: var(--ink-700);
+    }
+    .checklist li::before {
+        content: "✓";
+        flex-shrink: 0;
+        width: 20px; height: 20px;
+        border-radius: 50%;
+        background: var(--teal-100);
+        color: var(--teal-600);
+        display: grid;
+        place-items: center;
+        font-size: 11px;
+        font-weight: 800;
+        margin-top: 1px;
+    }
+
+    /* Contact card */
+    .contact-row {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 10px 0;
+        border-bottom: 1px dashed var(--ink-100);
+    }
+    .contact-row:last-child { border-bottom: none; }
+    .contact-row .ico-sm {
+        width: 34px; height: 34px;
+        border-radius: 9px;
+        background: var(--ivory-200);
+        color: var(--ink-900);
+        display: grid;
+        place-items: center;
+        font-size: 15px;
+        flex-shrink: 0;
+    }
+    .contact-row a,
+    .contact-row span {
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        color: var(--ink-950);
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .contact-row a:hover { color: var(--amber-700); }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 960px) {
+        .booking-grid {
+            grid-template-columns: 1fr;
+            gap: 24px;
+        }
+        .booking-card { padding: 32px 26px; }
+    }
+
+    @media (max-width: 600px) {
+        .wrap { padding: 0 18px; }
+        .booking-page { padding: 40px 0 56px; }
+        .booking-head { margin-bottom: 28px; }
+        .booking-head h1 { font-size: 30px; }
+        .booking-head p { font-size: 14.5px; }
+
+        .booking-card { padding: 26px 20px; }
+        .booking-card::before { height: 4px; }
+
+        .booking-submit { padding: 15px 20px; font-size: 14.5px; }
+
+        .side-card { padding: 22px 20px; }
+        .side-card.urgent .phone { font-size: 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: .001ms !important;
+            transition-duration: .001ms !important;
         }
     }
 </style>
 
-<div class="booking-container">
-    <h2>Book an Appointment</h2>
+<section class="booking-page">
+    <div class="wrap">
 
-    <form method="POST" class="booking-form">
-        {% csrf_token %}
-
-        {% if form %}
-            {{ form.as_p }}
-
-            <button type="submit" class="btn primary">
-                confirm booking
-            </button>
-        {% else %}
-            <p style="text-align: center; color: red;">
-                form variable missing. check your view content
+        <!-- Page head -->
+        <div class="booking-head">
+            <span class="booking-kicker">Schedule Your Visit</span>
+            <h1>Book an <em>appointment</em>.</h1>
+            <p>
+                Choose a doctor, pick a time that works for you, and we'll
+                confirm within minutes. Need urgent care? Call our 24/7
+                emergency line.
             </p>
-        {% endif %}
-    </form>
-</div>
+        </div>
+
+        <div class="booking-grid">
+
+            <!-- ---------- FORM CARD ---------- -->
+            <div class="booking-card">
+
+                <div class="form-step">
+                    <div class="step-num">1</div>
+                    <div>
+                        <p class="step-title">Your details</p>
+                        <p class="step-sub">Fields marked with * are required.</p>
+                    </div>
+                </div>
+
+                <form method="POST" class="booking-form" novalidate>
+                    {% csrf_token %}
+
+                    {% if form %}
+                        {{ form.as_p }}
+
+                        <button type="submit" class="booking-submit">
+                            Confirm Booking <span class="arrow">→</span>
+                        </button>
+
+                        <p class="form-note">
+                            By confirming, you agree to our
+                            <a href="/about/">terms of service</a> and
+                            <a href="/about/">privacy policy</a>.
+                        </p>
+                    {% else %}
+                        <div class="form-error">
+                            Form could not be loaded. Please refresh the page
+                            or contact us at
+                            <a href="tel:+919876543210" style="color:inherit; font-weight:700; text-decoration:underline;">+91 98765 43210</a>.
+                        </div>
+                    {% endif %}
+                </form>
+            </div>
+
+            <!-- ---------- SIDEBAR ---------- -->
+            <aside class="booking-sidebar">
+
+                <!-- Emergency -->
+                <div class="side-card urgent">
+                    <h3>
+                        <span class="ico">☎</span>
+                        Emergency Care
+                    </h3>
+                    <p>
+                        For life-threatening emergencies, do not use this form.
+                        Call our 24/7 emergency line immediately.
+                    </p>
+                    <a href="tel:+919876543210" class="phone">+91 98765 43210</a>
+                    <span class="small">Available 24 hours · 7 days a week</span>
+                </div>
+
+                <!-- Hours -->
+                <div class="side-card">
+                    <h3>
+                        <span class="ico">🕒</span>
+                        Clinic Hours
+                    </h3>
+                    <ul class="hours-list">
+                        <li><span class="day">Monday – Friday</span><span class="time">8:00 AM – 9:00 PM</span></li>
+                        <li><span class="day">Saturday</span><span class="time">8:00 AM – 9:00 PM</span></li>
+                        <li><span class="day">Sunday</span><span class="time">9:00 AM – 5:00 PM</span></li>
+                        <li><span class="day">Public Holidays</span><span class="time closed">Emergency only</span></li>
+                    </ul>
+                </div>
+
+                <!-- What to bring -->
+                <div class="side-card">
+                    <h3>
+                        <span class="ico">✓</span>
+                        What to Bring
+                    </h3>
+                    <ul class="checklist">
+                        <li>Valid photo ID (Aadhaar, passport, or driver's license)</li>
+                        <li>Health insurance card, if applicable</li>
+                        <li>List of current medications</li>
+                        <li>Previous medical records or reports</li>
+                    </ul>
+                </div>
+
+                <!-- Contact -->
+                <div class="side-card">
+                    <h3>
+                        <span class="ico">✚</span>
+                        Need Help?
+                    </h3>
+                    <div class="contact-row">
+                        <span class="ico-sm">☎</span>
+                        <a href="tel:+919876543210">+91 98765 43210</a>
+                    </div>
+                    <div class="contact-row">
+                        <span class="ico-sm">✉</span>
+                        <a href="mailto:info@medicare.com">info@medicare.com</a>
+                    </div>
+                    <div class="contact-row">
+                        <span class="ico-sm">⌂</span>
+                        <span>Kochi, Kerala</span>
+                    </div>
+                </div>
+
+            </aside>
+
+        </div>
+    </div>
+</section>
 
 {% endblock %}

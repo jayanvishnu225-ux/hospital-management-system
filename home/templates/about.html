@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}About Us | MediCare Hospital{% endblock %}
@@ -6,171 +5,927 @@
 {% block content %}
 
 <style>
-    .about-container {
-        max-width: 1100px;
-        margin: 20px auto;
+    /* ============================================================
+       TOKENS (match home page)
+       ============================================================ */
+    :root {
+        --ink-950: #0f1d33;
+        --ink-900: #1b2d4f;
+        --ink-700: #3a4a68;
+        --ink-500: #5f6f88;
+        --ink-300: #a8b2c4;
+        --ink-100: #e4ddd0;
+        --ink-050: #f2ece1;
+
+        --ivory-050: #fdfbf7;
+        --ivory-100: #fbf8f3;
+        --ivory-200: #f2ece1;
+
+        --amber-700: #a87519;
+        --amber-600: #c78d1f;
+        --amber-500: #e0a52e;
+        --amber-400: #f0bd55;
+        --amber-200: #fbe2ae;
+        --amber-100: #fdf2d5;
+
+        --teal-600: #1f7d72;
+        --teal-500: #2a9d8f;
+        --teal-100: #d6f2ee;
+
+        --radius-sm: 8px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --radius-xl: 28px;
+        --radius-pill: 999px;
+
+        --shadow-xs: 0 1px 2px rgba(15,29,51,.06);
+        --shadow-sm: 0 4px 16px rgba(15,29,51,.07);
+        --shadow-md: 0 12px 32px rgba(15,29,51,.10);
+        --shadow-lg: 0 24px 60px rgba(15,29,51,.18);
+
+        --ease: cubic-bezier(.22,1,.36,1);
+        --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+        --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+    /* ============================================================
+       HERO — BACKGROUND PHOTO
+       ============================================================ */
     .about-hero {
-        background: linear-gradient(135deg, #173f35, #286b54, #bd9454);
-        padding: 65px 25px;
-        text-align: center;
-        border-radius: 20px;
-        color: white;
-        box-shadow: 0 10px 30px rgba(40, 107, 84, 0.18);
         position: relative;
         overflow: hidden;
+        padding: 100px 0 88px;
+        color: #fff;
+        text-align: center;
+    }
+    .about-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+    }
+    .about-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(135deg,
+                rgba(15,29,51,.94) 0%,
+                rgba(15,29,51,.82) 45%,
+                rgba(15,29,51,.65) 100%),
+            radial-gradient(circle at 80% 20%, rgba(224,165,46,.18), transparent 55%);
+    }
+    .about-hero .wrap {
+        position: relative;
+        z-index: 1;
+    }
+
+    .about-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: var(--radius-pill);
+        background: rgba(224,165,46,.16);
+        border: 1px solid rgba(224,165,46,.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--amber-400);
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+    .about-eyebrow .dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--amber-400);
+        box-shadow: 0 0 0 4px rgba(224,165,46,.22);
     }
 
     .about-hero h1 {
-        font-size: 38px;
-        margin-bottom: 20px;
-        font-weight: 700;
-        line-height: 1.4;
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(38px, 5vw, 60px);
+        line-height: 1.06;
+        letter-spacing: -1.4px;
+        margin: 0 0 22px;
+        text-shadow: 0 2px 20px rgba(0,0,0,.25);
     }
-
-    .about-hero h1::after {
-        content: "";
-        display: block;
-        width: 75px;
-        height: 4px;
-        margin: 18px auto 0;
-        background: #efe5d1;
-        border-radius: 5px;
+    .about-hero h1 em {
+        font-style: italic;
+        color: var(--amber-400);
     }
 
     .about-hero p {
-        max-width: 700px;
+        max-width: 660px;
         margin: 0 auto;
+        font-family: var(--font-ui);
         font-size: 17px;
-        line-height: 1.9;
-        color: #eafaff;
+        line-height: 1.75;
+        color: #dbe3ee;
+        text-shadow: 0 1px 12px rgba(0,0,0,.3);
     }
 
-    .about-content {
+    /* stats under hero */
+    .about-stats {
         display: grid;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 25px;
-        margin-top: 35px;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        max-width: 780px;
+        margin: 44px auto 0;
+    }
+    .about-stat {
+        padding: 22px 18px;
+        border-radius: var(--radius-md);
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.16);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        text-align: center;
+    }
+    .about-stat .num {
+        font-family: var(--font-display);
+        font-size: 34px;
+        font-weight: 600;
+        line-height: 1;
+        color: var(--amber-400);
+        letter-spacing: -0.5px;
+    }
+    .about-stat .lbl {
+        margin-top: 8px;
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: #d4dbe6;
+        font-weight: 500;
+        letter-spacing: .3px;
     }
 
-    .about-card {
-        background: #ffffff;
-        padding: 32px;
+    /* ============================================================
+       SECTIONS
+       ============================================================ */
+    .section { padding: 80px 0; }
+    .section-alt { background: var(--ivory-100); }
+    .section-tight { padding: 48px 0; }
+
+    .section-head {
+        max-width: 660px;
+        margin: 0 auto 48px;
+        text-align: center;
+    }
+    .section-kicker {
+        display: inline-block;
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--amber-700);
+        margin-bottom: 14px;
+    }
+    .section-head h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(28px, 3.4vw, 42px);
+        line-height: 1.12;
+        letter-spacing: -0.7px;
+        color: var(--ink-950);
+        margin: 0 0 14px;
+    }
+    .section-head h2 em { font-style: italic; color: var(--amber-600); }
+    .section-head p {
+        margin: 0;
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-500);
+        font-family: var(--font-ui);
+    }
+
+    /* ============================================================
+       STORY — SPLIT LAYOUT
+       ============================================================ */
+    .story {
+        display: grid;
+        grid-template-columns: 1fr 1.15fr;
+        gap: 56px;
+        align-items: center;
+    }
+    .story-img {
+        position: relative;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        aspect-ratio: 4 / 5;
+        box-shadow: var(--shadow-lg);
+    }
+    .story-img img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+    }
+    .story-img::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 55%, rgba(15,29,51,.35) 100%);
+        pointer-events: none;
+    }
+    .story-img .floating-tag {
+        position: absolute;
+        bottom: 20px; left: 20px;
+        padding: 10px 16px;
+        border-radius: var(--radius-pill);
+        background: rgba(255,255,255,.94);
+        backdrop-filter: blur(8px);
+        color: var(--ink-950);
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        font-weight: 700;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 8px 24px rgba(0,0,0,.18);
+        z-index: 1;
+    }
+    .story-img .floating-tag .dot {
+        width: 8px; height: 8px; border-radius: 50%;
+        background: #22c55e;
+        box-shadow: 0 0 0 3px rgba(34,197,94,.22);
+    }
+
+    .story-copy h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(28px, 3.4vw, 40px);
+        line-height: 1.12;
+        letter-spacing: -0.6px;
+        color: var(--ink-950);
+        margin: 0 0 20px;
+    }
+    .story-copy h2 em { font-style: italic; color: var(--amber-600); }
+    .story-copy p {
+        font-family: var(--font-ui);
+        font-size: 16px;
+        line-height: 1.8;
+        color: var(--ink-700);
+        margin: 0 0 18px;
+    }
+    .story-copy .signature {
+        margin-top: 28px;
+        padding-top: 24px;
+        border-top: 1px solid var(--ink-100);
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .signature-avatar {
+        width: 52px; height: 52px;
+        border-radius: 50%;
+        overflow: hidden;
+        flex-shrink: 0;
+        border: 2px solid var(--ivory-200);
+    }
+    .signature-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .signature-name {
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        font-weight: 700;
+        color: var(--ink-950);
+        margin: 0;
+    }
+    .signature-role {
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: var(--ink-500);
+        margin: 2px 0 0;
+    }
+
+    /* ============================================================
+       VALUES GRID
+       ============================================================ */
+    .values {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 22px;
+    }
+    .value-card {
+        position: relative;
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-lg);
+        padding: 34px 30px;
+        overflow: hidden;
+        transition: all .4s var(--ease);
+    }
+    .value-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--amber-500), var(--teal-500));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform .4s var(--ease);
+    }
+    .value-card:hover {
+        transform: translateY(-6px);
+        border-color: transparent;
+        box-shadow: var(--shadow-md);
+    }
+    .value-card:hover::before { transform: scaleX(1); }
+
+    .value-icon {
+        width: 60px; height: 60px;
         border-radius: 16px;
-        border: 1px solid #e5e0d4;
-        box-shadow: 0 6px 22px rgba(23, 63, 53, 0.07);
-        transition: transform 0.3s ease,
-                    box-shadow 0.3s ease;
+        background: var(--amber-100);
+        color: var(--amber-700);
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        margin-bottom: 22px;
+        transition: all .4s var(--ease);
+    }
+    .value-card:hover .value-icon {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        transform: rotate(-6deg);
+    }
+    .value-card h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 22px;
+        letter-spacing: -0.3px;
+        color: var(--ink-950);
+        margin: 0 0 12px;
+    }
+    .value-card p {
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        line-height: 1.75;
+        color: var(--ink-500);
+        margin: 0;
     }
 
-    .about-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 12px 28px rgba(40, 107, 84, 0.13);
+    /* ============================================================
+       MILESTONES TIMELINE
+       ============================================================ */
+    .milestones {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 0;
+        position: relative;
+        margin-top: 20px;
+    }
+    .milestones::before {
+        content: "";
+        position: absolute;
+        top: 28px;
+        left: 10%;
+        right: 10%;
+        height: 2px;
+        background: linear-gradient(90deg, var(--amber-200), var(--amber-500), var(--amber-200));
+    }
+    .milestone {
+        position: relative;
+        text-align: center;
+        padding: 0 12px;
+    }
+    .milestone-dot {
+        position: relative;
+        z-index: 1;
+        width: 16px; height: 16px;
+        margin: 20px auto 20px;
+        border-radius: 50%;
+        background: var(--amber-500);
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 4px var(--amber-100);
+    }
+    .milestone-year {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 22px;
+        color: var(--ink-950);
+        letter-spacing: -0.3px;
+        margin-bottom: 6px;
+    }
+    .milestone-label {
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: var(--ink-500);
+        line-height: 1.5;
     }
 
-    .about-icon {
-        width: 55px;
-        height: 55px;
+    /* ============================================================
+       TEAM STRIP
+       ============================================================ */
+    .team-strip {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        margin-top: 12px;
+    }
+    .team-member {
+        position: relative;
+        border-radius: var(--radius-md);
+        overflow: hidden;
+        aspect-ratio: 4 / 5;
+        background: var(--ink-900);
+    }
+    .team-member img {
+        width: 100%; height: 100%;
+        object-fit: cover;
+        transition: transform .6s var(--ease);
+    }
+    .team-member:hover img { transform: scale(1.06); }
+    .team-member::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(180deg, transparent 50%, rgba(15,29,51,.85) 100%);
+        pointer-events: none;
+    }
+    .team-info {
+        position: absolute;
+        left: 16px; right: 16px; bottom: 14px;
+        z-index: 1;
+        color: #fff;
+    }
+    .team-info strong {
+        display: block;
+        font-family: var(--font-ui);
+        font-size: 14px;
+        font-weight: 700;
+    }
+    .team-info span {
+        display: block;
+        font-family: var(--font-ui);
+        font-size: 11.5px;
+        color: var(--amber-400);
+        font-weight: 600;
+        margin-top: 2px;
+    }
+
+    .team-cta {
+        text-align: center;
+        margin-top: 32px;
+    }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 14px 24px;
+        border-radius: var(--radius-pill);
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        font-weight: 600;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: all .3s var(--ease);
+        white-space: nowrap;
+    }
+    .btn-dark {
+        background: var(--ink-950);
+        color: #fff;
+        box-shadow: var(--shadow-sm);
+    }
+    .btn-dark:hover {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        transform: translateY(-2px);
+    }
+    .btn-amber {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        box-shadow: 0 12px 28px rgba(224,165,46,.35);
+    }
+    .btn-amber:hover {
+        background: var(--amber-400);
+        transform: translateY(-2px);
+    }
+    .btn-ghost {
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        border-color: rgba(255,255,255,.32);
+        backdrop-filter: blur(8px);
+    }
+    .btn-ghost:hover {
+        background: rgba(255,255,255,.16);
+        border-color: rgba(255,255,255,.60);
+        transform: translateY(-2px);
+    }
+
+    /* ============================================================
+       ACCREDITATION STRIP
+       ============================================================ */
+    .accreditation {
+        background: var(--ink-950);
+        color: #fff;
+        padding: 36px 0;
+    }
+    .accreditation .wrap {
         display: flex;
         align-items: center;
         justify-content: center;
-        background: #efe5d1;
-        color: #286b54;
-        font-size: 27px;
-        border-radius: 13px;
-        margin-bottom: 20px;
+        gap: 44px;
+        flex-wrap: wrap;
     }
-
-    .about-card h2 {
-        font-size: 23px;
-        color: #173f35;
-        margin-bottom: 14px;
+    .accreditation .label {
+        font-family: var(--font-ui);
+        font-size: 11.5px;
+        font-weight: 700;
+        letter-spacing: 1.6px;
+        text-transform: uppercase;
+        color: var(--amber-400);
     }
-
-    .about-card p {
-        font-size: 15px;
-        line-height: 1.9;
-        color: #64748b;
-    }
-
-    .about-message {
-        margin-top: 30px;
-        padding: 28px;
-        text-align: center;
-        border-radius: 15px;
-        background: #edf1e8;
-        border-left: 5px solid #bd9454;
-    }
-
-    .about-message p {
-        font-size: 17px;
-        color: #173f35;
-        line-height: 1.8;
+    .accreditation .logo {
+        font-family: var(--font-display);
         font-weight: 600;
+        font-size: 19px;
+        color: #e0e6ef;
+        opacity: .85;
+        letter-spacing: -0.3px;
     }
 
-    @media (max-width: 768px) {
-        .about-hero {
-            padding: 40px 20px;
-        }
+    /* ============================================================
+       CTA BANNER — BACKGROUND IMAGE
+       ============================================================ */
+    .cta-banner {
+        position: relative;
+        padding: 64px 56px;
+        border-radius: var(--radius-xl);
+        overflow: hidden;
+        color: #fff;
+    }
+    .cta-banner::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1551076805-e1869033e561?auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+    }
+    .cta-banner::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(100deg,
+                rgba(15,29,51,.94) 0%,
+                rgba(15,29,51,.78) 55%,
+                rgba(15,29,51,.55) 100%),
+            radial-gradient(circle at 100% 0%, rgba(224,165,46,.25), transparent 55%);
+    }
+    .cta-inner {
+        position: relative;
+        z-index: 1;
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 32px;
+    }
+    .cta-banner h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(28px, 3.4vw, 40px);
+        line-height: 1.14;
+        letter-spacing: -0.6px;
+        margin: 0 0 12px;
+    }
+    .cta-banner h2 em { color: var(--amber-400); font-style: italic; }
+    .cta-banner p {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 15.5px;
+        line-height: 1.7;
+        color: #d4dbe6;
+        max-width: 520px;
+    }
+    .cta-banner .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+    }
 
-        .about-hero h1 {
-            font-size: 28px;
-        }
-
-        .about-hero p {
-            font-size: 15px;
-        }
-
-        .about-content {
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1080px) {
+        .story { grid-template-columns: 1fr; gap: 40px; }
+        .story-img { aspect-ratio: 16 / 10; }
+        .values { grid-template-columns: 1fr 1fr; }
+        .team-strip { grid-template-columns: repeat(2, 1fr); }
+        .milestones {
             grid-template-columns: 1fr;
+            gap: 24px;
         }
+        .milestones::before { display: none; }
+        .milestone { text-align: left; padding-left: 44px; }
+        .milestone-dot {
+            position: absolute;
+            left: 12px; top: 0;
+            margin: 0;
+        }
+        .cta-inner { grid-template-columns: 1fr; }
+        .cta-banner { padding: 48px 36px; }
+    }
 
-        .about-card {
-            padding: 25px;
+    @media (max-width: 720px) {
+        .wrap { padding: 0 18px; }
+        .section { padding: 56px 0; }
+        .about-hero { padding: 64px 0 56px; }
+        .about-hero h1 { font-size: 36px; letter-spacing: -0.8px; }
+        .about-hero p { font-size: 15px; }
+        .about-stats { grid-template-columns: 1fr; gap: 10px; }
+        .values { grid-template-columns: 1fr; }
+        .team-strip { grid-template-columns: 1fr 1fr; }
+        .cta-banner { padding: 40px 28px; }
+        .cta-banner .actions { width: 100%; }
+        .cta-banner .actions .btn { flex: 1; justify-content: center; }
+        .accreditation .wrap { gap: 24px; }
+        .accreditation .logo { font-size: 16px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: .001ms !important;
+            transition-duration: .001ms !important;
         }
     }
 </style>
 
-<div class="about-container">
+<!-- ============================================================
+     HERO — BACKGROUND IMAGE
+     ============================================================ -->
+<section class="about-hero">
+    <div class="wrap">
+        <span class="about-eyebrow">
+            <span class="dot"></span>
+            About MediCare Hospital
+        </span>
 
-    <section class="about-hero">
-        <h1>Compassionate Care, Close to Home</h1>
+        <h1>
+            Compassionate care,<br>
+            <em>close to home</em>.
+        </h1>
 
         <p>
-            At MediCare Hospital, we bring skilled professionals and thoughtful care together to support the health of our community.
+            At MediCare Hospital, we bring skilled professionals and thoughtful
+            care together to support the health of our community — because
+            world-class medicine should always feel human.
         </p>
-    </section>
 
-    <div class="about-content">
+        <div class="about-stats">
+            <div class="about-stat">
+                <div class="num">18+</div>
+                <div class="lbl">Years of service</div>
+            </div>
+            <div class="about-stat">
+                <div class="num">15k+</div>
+                <div class="lbl">Patients treated</div>
+            </div>
+            <div class="about-stat">
+                <div class="num">120+</div>
+                <div class="lbl">Expert doctors</div>
+            </div>
+        </div>
+    </div>
+</section>
 
-        <div class="about-card">
-            <div class="about-icon">✚</div>
-            <h2>Our Commitment</h2>
+<!-- ============================================================
+     STORY — SPLIT LAYOUT
+     ============================================================ -->
+<section class="section">
+    <div class="wrap">
+        <div class="story">
+            <div class="story-img">
+                <img
+                    src="https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?auto=format&fit=crop&w=900&q=80"
+                    alt="MediCare Hospital medical team"
+                    loading="lazy">
+                <div class="floating-tag">
+                    <span class="dot"></span>
+                    Serving Kochi since 2008
+                </div>
+            </div>
+
+            <div class="story-copy">
+                <h2>Built on trust, <em>driven by care</em>.</h2>
+                <p>
+                    MediCare Hospital opened its doors in 2008 with a simple
+                    belief: that excellent medical care and genuine compassion
+                    belong together. Over the years, we've grown from a small
+                    clinic into a multi-specialty hospital serving thousands of
+                    families across Kerala.
+                </p>
+                <p>
+                    Today, our 120+ specialists work across 12 departments — from
+                    cardiology and neurology to pediatrics and orthopedics —
+                    supported by modern diagnostics, advanced surgical suites, and
+                    a team that puts patients first at every step.
+                </p>
+
+                <div class="signature">
+                    <div class="signature-avatar">
+                        <img
+                            src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=100&q=80"
+                            alt="Dr. Rohan Menon"
+                            loading="lazy">
+                    </div>
+                    <div>
+                        <p class="signature-name">Dr. Rohan Menon</p>
+                        <p class="signature-role">Medical Director, MediCare Hospital</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     VALUES
+     ============================================================ -->
+<section class="section section-alt">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Our Values</span>
+            <h2>What we <em>stand for</em>.</h2>
             <p>
-                Dedicated to supporting patient well-being through
-                compassionate care and professional medical services.
+                Every decision we make is guided by three commitments — to our
+                patients, our community, and the highest standard of care.
             </p>
         </div>
 
-        <div class="about-card">
-            <div class="about-icon">♡</div>
-            <h2>Patient Care</h2>
+        <div class="values">
+            <article class="value-card">
+                <div class="value-icon">✚</div>
+                <h3>Our Commitment</h3>
+                <p>
+                    Dedicated to supporting patient well-being through
+                    compassionate care, ethical practice, and professional
+                    medical services you can trust.
+                </p>
+            </article>
+
+            <article class="value-card">
+                <div class="value-icon">♡</div>
+                <h3>Patient Care</h3>
+                <p>
+                    We believe in treating every patient with respect, kindness,
+                    and deep attention to their individual healthcare needs —
+                    never as a number.
+                </p>
+            </article>
+
+            <article class="value-card">
+                <div class="value-icon">⚕</div>
+                <h3>Clinical Excellence</h3>
+                <p>
+                    Our doctors and staff uphold rigorous clinical standards,
+                    with continuous training, modern technology, and evidence-based
+                    medicine at the core.
+                </p>
+            </article>
+        </div>
+    </div>
+</section>
+
+<!-- ============================================================
+     MILESTONES
+     ============================================================ -->
+<section class="section">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Our Journey</span>
+            <h2>Growing with <em>our community</em>.</h2>
             <p>
-                We believe in treating every patient with respect,
-                kindness, and attention to their healthcare needs.
+                Nearly two decades of caring for the families of Kochi and
+                beyond — here are a few milestones along the way.
             </p>
         </div>
 
+        <div class="milestones">
+            <div class="milestone">
+                <div class="milestone-dot"></div>
+                <div class="milestone-year">2008</div>
+                <div class="milestone-label">Founded as a<br>small clinic</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dot"></div>
+                <div class="milestone-year">2012</div>
+                <div class="milestone-label">First multi-<br>specialty wing</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dot"></div>
+                <div class="milestone-year">2016</div>
+                <div class="milestone-label">NABH<br>accreditation</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dot"></div>
+                <div class="milestone-year">2020</div>
+                <div class="milestone-label">Advanced<br>surgical centre</div>
+            </div>
+            <div class="milestone">
+                <div class="milestone-dot"></div>
+                <div class="milestone-year">2026</div>
+                <div class="milestone-label">120+ specialists<br>across 12 depts</div>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="about-message">
-        <p>
-            MediCare Hospital — Caring for You, Every Day.
-        </p>
+<!-- ============================================================
+     TEAM STRIP
+     ============================================================ -->
+<section class="section section-alt">
+    <div class="wrap">
+        <div class="section-head">
+            <span class="section-kicker">Our Team</span>
+            <h2>People behind the <em>care</em>.</h2>
+            <p>
+                Experienced specialists and a dedicated care team — meet a few of
+                the people who make MediCare what it is.
+            </p>
+        </div>
+
+        <div class="team-strip">
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=600&q=80" alt="Dr. Rohan Menon" loading="lazy">
+                <div class="team-info">
+                    <strong>Dr. Rohan Menon</strong>
+                    <span>Cardiology</span>
+                </div>
+            </div>
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1594824476967-48c8b964273f?auto=format&fit=crop&w=600&q=80" alt="Dr. Aisha Verma" loading="lazy">
+                <div class="team-info">
+                    <strong>Dr. Aisha Verma</strong>
+                    <span>Neurology</span>
+                </div>
+            </div>
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=600&q=80" alt="Dr. Suresh Kumar" loading="lazy">
+                <div class="team-info">
+                    <strong>Dr. Suresh Kumar</strong>
+                    <span>Orthopedics</span>
+                </div>
+            </div>
+            <div class="team-member">
+                <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=600&q=80" alt="Dr. Priya Nair" loading="lazy">
+                <div class="team-info">
+                    <strong>Dr. Priya Nair</strong>
+                    <span>Pediatrics</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="team-cta">
+            <a href="/doctors/" class="btn btn-dark">
+                Meet all our doctors →
+            </a>
+        </div>
     </div>
+</section>
 
+<!-- ============================================================
+     ACCREDITATIONS
+     ============================================================ -->
+<div class="accreditation">
+    <div class="wrap">
+        <span class="label">Recognized by</span>
+        <span class="logo">NABH</span>
+        <span class="logo">NABL</span>
+        <span class="logo">ISO 9001</span>
+        <span class="logo">Star Health</span>
+        <span class="logo">HDFC Ergo</span>
+        <span class="logo">ICICI Lombard</span>
+    </div>
 </div>
+
+<!-- ============================================================
+     CTA BANNER
+     ============================================================ -->
+<section class="section-tight">
+    <div class="wrap">
+        <div class="cta-banner">
+            <div class="cta-inner">
+                <div>
+                    <h2>Care you can <em>count on</em>.</h2>
+                    <p>
+                        MediCare Hospital — caring for you, every day. Book an
+                        appointment or visit us to see the difference for yourself.
+                    </p>
+                </div>
+                <div class="actions">
+                    <a href="/booking/" class="btn btn-amber">Book Appointment →</a>
+                    <a href="/contact/" class="btn btn-ghost">Contact Us</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 
 {% endblock %}

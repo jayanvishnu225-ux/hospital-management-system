@@ -1,4 +1,3 @@
-
 {% extends "base.html" %}
 
 {% block title %}Departments | MediCare Hospital{% endblock %}
@@ -6,162 +5,668 @@
 {% block content %}
 
 <style>
-    .department-page {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 10px 0 30px;
+    /* ============================================================
+       TOKENS (match home / about / booking / doctors)
+       ============================================================ */
+    :root {
+        --ink-950: #0f1d33;
+        --ink-900: #1b2d4f;
+        --ink-700: #3a4a68;
+        --ink-500: #5f6f88;
+        --ink-300: #a8b2c4;
+        --ink-100: #e4ddd0;
+        --ink-050: #f2ece1;
+
+        --ivory-050: #fdfbf7;
+        --ivory-100: #fbf8f3;
+        --ivory-200: #f2ece1;
+
+        --amber-700: #a87519;
+        --amber-600: #c78d1f;
+        --amber-500: #e0a52e;
+        --amber-400: #f0bd55;
+        --amber-200: #fbe2ae;
+        --amber-100: #fdf2d5;
+
+        --teal-600: #1f7d72;
+        --teal-500: #2a9d8f;
+        --teal-100: #d6f2ee;
+
+        --red-600: #b22b1f;
+        --red-500: #e63946;
+        --red-100: #fde4e2;
+
+        --radius-sm: 8px;
+        --radius-md: 14px;
+        --radius-lg: 20px;
+        --radius-xl: 28px;
+        --radius-pill: 999px;
+
+        --shadow-xs: 0 1px 2px rgba(15,29,51,.06);
+        --shadow-sm: 0 4px 16px rgba(15,29,51,.07);
+        --shadow-md: 0 12px 32px rgba(15,29,51,.10);
+        --shadow-lg: 0 24px 60px rgba(15,29,51,.18);
+
+        --ease: cubic-bezier(.22,1,.36,1);
+        --font-display: "Fraunces", Georgia, "Times New Roman", serif;
+        --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
-    .department-header {
+    .wrap { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+    /* ============================================================
+       HERO — BACKGROUND PHOTO
+       ============================================================ */
+    .dept-hero {
+        position: relative;
+        overflow: hidden;
+        padding: 96px 0 84px;
+        color: #fff;
         text-align: center;
-        padding: 40px 20px;
-        margin-bottom: 35px;
-        background: linear-gradient(135deg, #173f35, #286b54, #bd9454);
-        border-radius: 18px;
-        color: white;
-        box-shadow: 0 8px 25px rgba(40, 107, 84, 0.18);
+    }
+    .dept-hero::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background-image: url('https://images.unsplash.com/photo-1538108149393-fbbd81895907?auto=format&fit=crop&w=2000&q=80');
+        background-size: cover;
+        background-position: center;
+    }
+    .dept-hero::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background:
+            linear-gradient(135deg,
+                rgba(15,29,51,.94) 0%,
+                rgba(15,29,51,.82) 45%,
+                rgba(15,29,51,.65) 100%),
+            radial-gradient(circle at 80% 20%, rgba(224,165,46,.18), transparent 55%);
+    }
+    .dept-hero .wrap {
+        position: relative;
+        z-index: 1;
     }
 
-    .department-header h1 {
-        font-size: 34px;
-        margin-bottom: 15px;
+    .dept-eyebrow {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: var(--radius-pill);
+        background: rgba(224,165,46,.16);
+        border: 1px solid rgba(224,165,46,.35);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        color: var(--amber-400);
+        font-family: var(--font-ui);
+        font-size: 12px;
         font-weight: 700;
+        letter-spacing: 1.4px;
+        text-transform: uppercase;
+        margin-bottom: 24px;
+    }
+    .dept-eyebrow .dot {
+        width: 6px; height: 6px; border-radius: 50%;
+        background: var(--amber-400);
+        box-shadow: 0 0 0 4px rgba(224,165,46,.22);
     }
 
-    .department-header p {
-        max-width: 650px;
+    .dept-hero h1 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(36px, 5vw, 58px);
+        line-height: 1.06;
+        letter-spacing: -1.3px;
+        margin: 0 0 20px;
+        text-shadow: 0 2px 20px rgba(0,0,0,.25);
+    }
+    .dept-hero h1 em {
+        font-style: italic;
+        color: var(--amber-400);
+    }
+    .dept-hero p {
+        max-width: 640px;
         margin: 0 auto;
-        font-size: 16px;
-        line-height: 1.8;
-        color: #f5f2e8;
+        font-family: var(--font-ui);
+        font-size: 17px;
+        line-height: 1.75;
+        color: #dbe3ee;
+        text-shadow: 0 1px 12px rgba(0,0,0,.3);
     }
 
+    /* Stats under hero */
+    .dept-stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 16px;
+        max-width: 720px;
+        margin: 40px auto 0;
+    }
+    .dept-stat {
+        padding: 20px 16px;
+        border-radius: var(--radius-md);
+        background: rgba(255,255,255,.08);
+        border: 1px solid rgba(255,255,255,.16);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        text-align: center;
+    }
+    .dept-stat .num {
+        font-family: var(--font-display);
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1;
+        color: var(--amber-400);
+        letter-spacing: -0.5px;
+    }
+    .dept-stat .lbl {
+        margin-top: 8px;
+        font-family: var(--font-ui);
+        font-size: 12.5px;
+        color: #d4dbe6;
+        font-weight: 500;
+    }
+
+    /* ============================================================
+       GRID SECTION
+       ============================================================ */
+    .dept-page {
+        position: relative;
+        padding: 72px 0 80px;
+        overflow: hidden;
+        background: var(--ivory-100);
+    }
+    .dept-page::before,
+    .dept-page::after {
+        content: "";
+        position: absolute;
+        border-radius: 50%;
+        filter: blur(80px);
+        opacity: .45;
+        pointer-events: none;
+        z-index: 0;
+    }
+    .dept-page::before {
+        width: 420px; height: 420px;
+        top: -140px; right: -120px;
+        background: radial-gradient(circle, #fbe2ae, transparent 70%);
+    }
+    .dept-page::after {
+        width: 360px; height: 360px;
+        bottom: -140px; left: -100px;
+        background: radial-gradient(circle, #d6f2ee, transparent 70%);
+    }
+    .dept-page .wrap {
+        position: relative;
+        z-index: 1;
+    }
+
+    .section-head {
+        max-width: 660px;
+        margin: 0 auto 48px;
+        text-align: center;
+    }
+    .section-kicker {
+        display: inline-block;
+        font-family: var(--font-ui);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+        color: var(--amber-700);
+        margin-bottom: 14px;
+    }
+    .section-head h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(28px, 3.6vw, 42px);
+        line-height: 1.12;
+        letter-spacing: -0.7px;
+        color: var(--ink-950);
+        margin: 0 0 14px;
+    }
+    .section-head h2 em { font-style: italic; color: var(--amber-600); }
+    .section-head p {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 16px;
+        line-height: 1.7;
+        color: var(--ink-500);
+    }
+
+    /* ============================================================
+       DEPARTMENT CARDS
+       ============================================================ */
     .department-grid {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-        gap: 25px;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 24px;
     }
 
     .department-card {
-        background: #ffffff;
-        padding: 30px 25px;
-        border-radius: 15px;
-        border: 1px solid #e5e0d4;
-        border-bottom: 4px solid #bd9454;
-        box-shadow: 0 5px 18px rgba(23, 63, 53, 0.07);
-        transition: transform 0.3s ease,
-                    box-shadow 0.3s ease;
-    }
-
-    .department-card:hover {
-        transform: translateY(-7px);
-        box-shadow: 0 12px 28px rgba(40, 107, 84, 0.15);
-    }
-
-    .department-icon {
-        width: 55px;
-        height: 55px;
+        position: relative;
+        background: #fff;
+        border: 1px solid var(--ink-100);
+        border-radius: var(--radius-lg);
+        padding: 32px 28px 30px;
+        overflow: hidden;
         display: flex;
-        align-items: center;
-        justify-content: center;
-        background: #efe5d1;
-        color: #286b54;
-        border-radius: 13px;
-        font-size: 27px;
-        margin-bottom: 20px;
+        flex-direction: column;
+        transition: all .4s var(--ease);
+    }
+    .department-card::before {
+        content: "";
+        position: absolute;
+        top: 0; left: 0; right: 0;
+        height: 4px;
+        background: linear-gradient(90deg, var(--amber-500), var(--teal-500));
+        transform: scaleX(0);
+        transform-origin: left;
+        transition: transform .4s var(--ease);
+    }
+    .department-card:hover {
+        transform: translateY(-6px);
+        border-color: transparent;
+        box-shadow: var(--shadow-md);
+    }
+    .department-card:hover::before { transform: scaleX(1); }
+
+    /* number badge */
+    .dept-number {
+        position: absolute;
+        top: 24px; right: 24px;
+        font-family: var(--font-display);
+        font-size: 34px;
+        font-weight: 600;
+        color: var(--ink-100);
+        line-height: 1;
+        letter-spacing: -0.5px;
+        transition: color .4s var(--ease);
+        user-select: none;
+    }
+    .department-card:hover .dept-number {
+        color: var(--amber-200);
+    }
+
+    /* icon tile */
+    .department-icon {
+        width: 60px; height: 60px;
+        border-radius: 16px;
+        background: var(--amber-100);
+        color: var(--amber-700);
+        display: grid;
+        place-items: center;
+        font-size: 26px;
+        margin-bottom: 22px;
+        transition: all .4s var(--ease);
+    }
+    .department-card:hover .department-icon {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        transform: rotate(-6deg);
     }
 
     .department-card h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
         font-size: 22px;
-        color: #173f35;
-        margin-bottom: 14px;
-        line-height: 1.4;
+        letter-spacing: -0.3px;
+        color: var(--ink-950);
+        margin: 0 0 12px;
+        line-height: 1.25;
+        padding-right: 50px;
     }
 
     .department-card p {
-        font-size: 15px;
-        line-height: 1.8;
-        color: #64748b;
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        line-height: 1.75;
+        color: var(--ink-500);
+        margin: 0 0 22px;
         overflow-wrap: anywhere;
+        flex: 1;
     }
 
-    .department-footer {
-        text-align: center;
-        margin-top: 35px;
-        padding: 22px;
-        background: #edf1e8;
-        border-radius: 12px;
-        color: #173f35;
-        font-size: 15px;
-        line-height: 1.8;
+    .dept-link {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--font-ui);
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink-950);
+        text-decoration: none;
+        transition: color .25s var(--ease);
+        margin-top: auto;
     }
+    .dept-link span { transition: transform .25s var(--ease); }
+    .dept-link:hover { color: var(--amber-700); }
+    .dept-link:hover span { transform: translateX(3px); }
 
+    /* ============================================================
+       EMPTY STATE
+       ============================================================ */
     .no-departments {
         grid-column: 1 / -1;
         text-align: center;
-        padding: 35px;
-        background: #ffffff;
-        border-radius: 12px;
-        color: #64748b;
+        padding: 64px 24px;
+        background: #fff;
+        border: 1px dashed var(--ink-100);
+        border-radius: var(--radius-xl);
+        max-width: 560px;
+        margin: 0 auto;
+        width: 100%;
+    }
+    .no-departments .empty-icon {
+        width: 72px; height: 72px;
+        margin: 0 auto 20px;
+        border-radius: 20px;
+        background: var(--amber-100);
+        color: var(--amber-700);
+        display: grid;
+        place-items: center;
+        font-size: 30px;
+    }
+    .no-departments h2 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 24px;
+        color: var(--ink-950);
+        margin: 0 0 10px;
+        letter-spacing: -0.3px;
+    }
+    .no-departments p {
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        line-height: 1.7;
+        color: var(--ink-500);
+        margin: 0;
     }
 
-    @media (max-width: 768px) {
-        .department-header {
-            padding: 30px 18px;
-        }
+    /* ============================================================
+       COORDINATED CARE CALLOUT
+       ============================================================ */
+    .care-callout {
+        position: relative;
+        margin-top: 56px;
+        padding: 48px 40px;
+        border-radius: var(--radius-xl);
+        background:
+            radial-gradient(circle at 100% 0%, rgba(224,165,46,.14), transparent 55%),
+            linear-gradient(120deg, var(--ink-950), var(--ink-900));
+        color: #fff;
+        overflow: hidden;
+        display: grid;
+        grid-template-columns: 1.4fr auto;
+        align-items: center;
+        gap: 32px;
+    }
+    .care-callout::after {
+        content: "✚";
+        position: absolute;
+        right: 40px; top: 50%;
+        transform: translateY(-50%);
+        font-size: 200px;
+        opacity: .04;
+        pointer-events: none;
+        line-height: 1;
+    }
+    .care-callout h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: clamp(24px, 2.8vw, 32px);
+        line-height: 1.2;
+        letter-spacing: -0.5px;
+        margin: 0 0 10px;
+    }
+    .care-callout h3 em { color: var(--amber-400); font-style: italic; }
+    .care-callout p {
+        margin: 0;
+        font-family: var(--font-ui);
+        font-size: 15px;
+        line-height: 1.7;
+        color: #c9d2e0;
+        max-width: 560px;
+    }
+    .care-callout .actions {
+        display: flex;
+        gap: 10px;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+        position: relative;
+        z-index: 1;
+    }
 
-        .department-header h1 {
-            font-size: 27px;
-        }
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        padding: 14px 24px;
+        border-radius: var(--radius-pill);
+        font-family: var(--font-ui);
+        font-size: 14.5px;
+        font-weight: 700;
+        text-decoration: none;
+        border: 1px solid transparent;
+        transition: all .3s var(--ease);
+        white-space: nowrap;
+        cursor: pointer;
+    }
+    .btn-amber {
+        background: var(--amber-500);
+        color: var(--ink-950);
+        box-shadow: 0 12px 28px rgba(224,165,46,.32);
+    }
+    .btn-amber:hover {
+        background: var(--amber-400);
+        transform: translateY(-2px);
+        box-shadow: 0 16px 34px rgba(224,165,46,.45);
+    }
+    .btn-ghost {
+        background: rgba(255,255,255,.08);
+        color: #fff;
+        border-color: rgba(255,255,255,.32);
+        backdrop-filter: blur(8px);
+    }
+    .btn-ghost:hover {
+        background: rgba(255,255,255,.16);
+        border-color: rgba(255,255,255,.55);
+        transform: translateY(-2px);
+    }
 
-        .department-grid {
-            grid-template-columns: 1fr;
-            gap: 18px;
-        }
+    /* ============================================================
+       SCROLL REVEAL
+       ============================================================ */
+    .reveal {
+        opacity: 0;
+        transform: translateY(22px);
+        transition: opacity .7s var(--ease), transform .7s var(--ease);
+    }
+    .reveal.is-visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
-        .department-card {
-            padding: 25px 20px;
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 1080px) {
+        .department-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 860px) {
+        .dept-hero { padding: 72px 0 64px; }
+        .dept-stats { gap: 10px; }
+        .care-callout { grid-template-columns: 1fr; padding: 40px 32px; }
+        .care-callout::after { display: none; }
+    }
+    @media (max-width: 680px) {
+        .wrap { padding: 0 18px; }
+        .dept-hero { padding: 56px 0 48px; }
+        .dept-hero h1 { font-size: 34px; letter-spacing: -0.8px; }
+        .dept-hero p { font-size: 15px; }
+        .dept-stats { grid-template-columns: 1fr; gap: 10px; margin-top: 28px; }
+
+        .dept-page { padding: 52px 0 64px; }
+        .department-grid { grid-template-columns: 1fr; gap: 16px; }
+        .department-card { padding: 26px 22px; }
+        .dept-number { font-size: 28px; top: 20px; right: 20px; }
+
+        .care-callout { padding: 32px 24px; margin-top: 40px; }
+        .care-callout .actions { width: 100%; }
+        .care-callout .actions .btn { flex: 1; justify-content: center; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after {
+            animation-duration: .001ms !important;
+            transition-duration: .001ms !important;
         }
+        .reveal { opacity: 1; transform: none; }
     }
 </style>
 
-<div class="department-page">
+<!-- ============================================================
+     HERO — BACKGROUND PHOTO
+     ============================================================ -->
+<section class="dept-hero">
+    <div class="wrap">
+        <span class="dept-eyebrow">
+            <span class="dot"></span>
+            Centres of Excellence
+        </span>
 
-    <div class="department-header">
-        <h1>Explore Our Departments</h1>
+        <h1>
+            Explore our<br>
+            <em>departments</em>.
+        </h1>
+
         <p>
-            Explore our hospital departments, dedicated to providing
-            quality healthcare and professional medical services.
+            Twelve specialty departments, one coordinated care team. From
+            cardiology to pediatrics, our specialists work together to give you
+            the right care at the right time.
         </p>
+
+        <div class="dept-stats">
+            <div class="dept-stat">
+                <div class="num">12</div>
+                <div class="lbl">Specialty departments</div>
+            </div>
+            <div class="dept-stat">
+                <div class="num">120+</div>
+                <div class="lbl">Expert doctors</div>
+            </div>
+            <div class="dept-stat">
+                <div class="num">24/7</div>
+                <div class="lbl">Emergency support</div>
+            </div>
+        </div>
     </div>
+</section>
 
-    <div class="department-grid">
+<!-- ============================================================
+     DEPARTMENT GRID
+     ============================================================ -->
+<section class="dept-page">
+    <div class="wrap">
 
-        {% for d in dept %}
-        <div class="department-card">
+        <div class="section-head">
+            <span class="section-kicker">Our Specialties</span>
+            <h2>Specialized care, <em>close to home</em>.</h2>
+            <p>
+                Each department brings together leading specialists, modern
+                diagnostics, and evidence-based care — all under one roof.
+            </p>
+        </div>
 
-            <div class="department-icon">✚</div>
+        <div class="department-grid">
 
-            <h2>{{ d.department_name }}</h2>
+            {% for d in dept %}
+            <article class="department-card reveal">
 
-            <p>{{ d.department_disc }}</p>
+                <span class="dept-number">{{ forloop.counter|stringformat:"02d" }}</span>
+
+                <div class="department-icon">
+                    {% if forloop.counter == 1 %}♥
+                    {% elif forloop.counter == 2 %}⚕
+                    {% elif forloop.counter == 3 %}🦴
+                    {% elif forloop.counter == 4 %}👶
+                    {% elif forloop.counter == 5 %}⚕
+                    {% elif forloop.counter == 6 %}✚
+                    {% elif forloop.counter == 7 %}👁
+                    {% elif forloop.counter == 8 %}🦷
+                    {% else %}✚
+                    {% endif %}
+                </div>
+
+                <h2>{{ d.department_name }}</h2>
+
+                <p>{{ d.department_disc }}</p>
+
+                <a href="/booking/" class="dept-link">
+                    Book a consultation <span>→</span>
+                </a>
+
+            </article>
+            {% empty %}
+
+            <div class="no-departments">
+                <div class="empty-icon">✚</div>
+                <h2>Departments coming soon</h2>
+                <p>
+                    We're updating our department directory. Please check back
+                    later or contact us to find the care you need.
+                </p>
+            </div>
+
+            {% endfor %}
 
         </div>
-        {% empty %}
-        <div class="no-departments">
-            <h2>No Departments Available</h2>
-            <p>Please check back later for department information.</p>
+
+        <!-- Coordinated care callout -->
+        <div class="care-callout reveal">
+            <div>
+                <h3>Care that's <em>coordinated</em>, not fragmented.</h3>
+                <p>
+                    Our departments work together — sharing records, consulting
+                    across specialties, and following a single care plan built
+                    around you.
+                </p>
+            </div>
+            <div class="actions">
+                <a href="/booking/" class="btn btn-amber">Book Appointment →</a>
+                <a href="/doctors/" class="btn btn-ghost">Find a Doctor</a>
+            </div>
         </div>
-        {% endfor %}
 
     </div>
+</section>
 
-    <div class="department-footer">
-        <p>
-            Our care teams work together to provide coordinated, patient-focused care.
-        </p>
-    </div>
+<!-- ============================================================
+     SCROLL REVEAL SCRIPT
+     ============================================================ -->
+<script>
+    (function () {
+        const els = document.querySelectorAll('.reveal');
+        if (!('IntersectionObserver' in window) ||
+            window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            els.forEach(function (el) { el.classList.add('is-visible'); });
+            return;
+        }
+        const io = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    io.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
 
-</div>
+        els.forEach(function (el, i) {
+            el.style.transitionDelay = (i % 9) * 55 + 'ms';
+            io.observe(el);
+        });
+    })();
+</script>
 
 {% endblock %}
